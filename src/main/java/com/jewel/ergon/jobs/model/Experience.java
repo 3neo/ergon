@@ -1,5 +1,6 @@
-package com.jewel.ergon.domain;
+package com.jewel.ergon.jobs.model;
 
+import com.jewel.ergon.cv.model.Cv;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;

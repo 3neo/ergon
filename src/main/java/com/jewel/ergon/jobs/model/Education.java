@@ -1,6 +1,7 @@
-package com.jewel.ergon.domain;
+package com.jewel.ergon.jobs.model;
 
 
+import com.jewel.ergon.cv.model.Cv;
 import jakarta.persistence.*;
 import lombok.*;
 

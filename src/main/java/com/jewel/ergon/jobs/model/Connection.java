@@ -1,4 +1,4 @@
-package com.jewel.ergon.domain;
+package com.jewel.ergon.jobs.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

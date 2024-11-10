@@ -1,4 +1,4 @@
-package com.jewel.ergon.domain;
+package com.jewel.ergon.jobs.model;
 
 public enum DemandType {
     MAIL , LINKEDIN , TANITJOB  , OPTIONCARRIERE , OTHER
