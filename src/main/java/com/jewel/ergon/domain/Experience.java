@@ -1,12 +1,10 @@
-package com.jewel.ergon.model;
+package com.jewel.ergon.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder

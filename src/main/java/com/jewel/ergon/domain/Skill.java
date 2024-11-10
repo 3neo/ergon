@@ -1,15 +1,10 @@
-package com.jewel.ergon.model;
+package com.jewel.ergon.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 @Builder
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package com.jewel.ergon.model;
+package com.jewel.ergon.domain;
 
 /**
  * Enum for representing various languages with their ISO language codes.

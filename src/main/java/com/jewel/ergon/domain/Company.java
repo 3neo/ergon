@@ -1,10 +1,8 @@
-package com.jewel.ergon.model;
+package com.jewel.ergon.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
