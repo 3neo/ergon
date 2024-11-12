@@ -32,7 +32,7 @@ public class Skill {
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     @JoinColumn(nullable = false)
-    private Jobseeker jobseeker;
+    private JobSeeker jobseeker;
 
 
     @ManyToMany(mappedBy = "skills", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})

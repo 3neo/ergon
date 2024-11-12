@@ -45,7 +45,7 @@ public class Education {
     @ToString.Exclude
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "job_seeker_id", nullable = false)
-    private Jobseeker jobseeker;
+    private JobSeeker jobseeker;
 
     @ManyToMany(mappedBy = "educations", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Cv> cvs = new ArrayList<>();

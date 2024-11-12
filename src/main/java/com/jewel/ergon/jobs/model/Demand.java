@@ -21,7 +21,7 @@ public class Demand {
 
     @ManyToOne
     @JoinColumn(name = "job_seeker_id", nullable = false)
-    private Jobseeker jobseeker;
+    private JobSeeker jobseeker;
 
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)

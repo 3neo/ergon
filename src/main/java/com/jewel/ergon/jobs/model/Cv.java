@@ -39,7 +39,7 @@ public class Cv {
 
     //    @ManyToOne
 //    @JoinColumn(name = "Job_seeker_id", nullable = false)
-//    private Jobseeker jobseeker;
+//    private JobSeeker jobseeker;
 
 //    @ToString.Exclude
 //    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
