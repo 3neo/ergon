@@ -26,6 +26,7 @@ public class JobSeeker {
     @Column(nullable = false, unique = true)
     private String email;
 
+
     @ToString.Exclude
     @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Demand> demands;
@@ -42,5 +43,7 @@ public class JobSeeker {
     @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Education> educations = new ArrayList<>();
 
-    // Constructors, getters, and setters
+    @Column(name = "phone")
+    private String phone;
+
 }

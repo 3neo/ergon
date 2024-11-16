@@ -5,6 +5,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -23,13 +24,15 @@ public class Experience {
     @Column(name = "job_title", nullable = false)
     private String jobTitle;
 
+
+
     @ToString.Exclude
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
     @PastOrPresent
-    @Column(name = "start_date", nullable = false)
+    @Column(name = "start_date", nullable = false, unique = true)
     private LocalDate startDate;
 
     @PastOrPresent
@@ -47,5 +50,9 @@ public class Experience {
     @ManyToMany(mappedBy = "experiences", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @ToString.Exclude
     private List<Cv> cvs ;
+
+
+    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Contract> contracts = new ArrayList<>();
 
 }

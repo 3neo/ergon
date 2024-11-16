@@ -1,0 +1,61 @@
+package com.jewel.ergon.jobs.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.PastOrPresent;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+
+//TODO add currency
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@Entity
+public class Contract {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "contract_title")
+    private String contractTitle;
+
+    @Column(name = "contract_number", nullable = false, unique = true)
+    private String contractNumber;
+
+
+    @PastOrPresent(message = "Date should be in past")
+    @Column(name = "start_date", nullable = false, unique = true)
+    private LocalDate startDate;
+
+    @PastOrPresent(message = "Date should be in past")
+    @Column(name = "end_date", unique = true)
+    private LocalDate endDate;
+
+    @Column(name = "is_cdi", nullable = false)
+    private Boolean isCdi = false;
+
+    @Column(name = "salary", nullable = false, precision = 10, scale = 2)
+    private BigDecimal salary;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "contract_type", nullable = false)
+    private ContractType contractType;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    private Experience experience;
+
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Currency currency;
+
+}
