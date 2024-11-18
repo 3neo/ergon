@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-//TODO add similar services to other entities
 @Service
 public class CompanyService extends CrudServiceImpl<Company, Long> {
 

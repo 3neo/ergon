@@ -1,5 +1,6 @@
 package com.jewel.ergon.jobs.services;
 
+import com.jewel.ergon.jobs.exceptions.IncompatibleSourceAndTargetFieldsTypesException;
 import com.jewel.ergon.jobs.model.Company;
 import com.jewel.ergon.jobs.model.Demand;
 import com.jewel.ergon.jobs.model.Status;
@@ -44,7 +45,7 @@ public class DemandService extends CrudServiceImpl<Demand, Long> {
 
 
     @Transactional
-    public Demand updateDemand(long id, Demand source) throws IllegalAccessException, NoSuchElementException {
+    public Demand updateDemand(long id, Demand source) throws IllegalAccessException, NoSuchElementException, IncompatibleSourceAndTargetFieldsTypesException {
         Demand target = this.findById(id).orElseThrow();
         getAndSet(source, target);
         save(target);

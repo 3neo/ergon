@@ -1,0 +1,109 @@
+package com.jewel.ergon.jobs.controllers;
+
+import com.jewel.ergon.jobs.model.Connection;
+import com.jewel.ergon.jobs.services.ConnectionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/v1/connections")
+@Tag(name = "Connection Controller", description = "API for managing connections")
+public class ConnectionController {
+
+    private final ConnectionService connectionService;
+
+    @Autowired
+    public ConnectionController(ConnectionService connectionService) {
+        this.connectionService = connectionService;
+    }
+
+    /**
+     * Fetches all connections for the user.
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all connections", description = "Retrieve a list of all connections for the user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of connections",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Connection.class))})
+    })
+    @GetMapping("/getAllConnections")
+    public ResponseEntity<StandardResponse<List<Connection>>> getAllConnections() {
+        List<Connection> connections = connectionService.findAll();
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Connections retrieved successfully", connections));
+    }
+
+    /**
+     * Fetches a connection by its unique identifier.
+     */
+    @Operation(summary = "Get connection by ID", description = "Retrieve a specific connection by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Connection found",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Connection.class))}),
+            @ApiResponse(responseCode = "404", description = "Connection not found", content = @Content)
+    })
+    @GetMapping("/getConnectionById/{id}")
+    public ResponseEntity<StandardResponse<Connection>> getConnectionById(@PathVariable Long id) {
+        Optional<Connection> connection = connectionService.findById(id);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Connection retrieved successfully", connection.orElseThrow()));
+    }
+
+    /**
+     * Creates a new Connection.
+     */
+    @Operation(summary = "Create a new connection", description = "Add a new Connection to the list.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Connection created",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Connection.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
+    })
+    @PostMapping("/createConnection")
+    public ResponseEntity<StandardResponse<Connection>> createConnection(@Valid @RequestBody Connection connectionRequest) {
+        Connection createdConnection = connectionService.save(connectionRequest);
+        return new ResponseEntity<>(new StandardResponse<>(HttpStatus.CREATED.value(), "Connection created successfully", createdConnection), HttpStatus.CREATED);
+    }
+
+    /**
+     * Updates an existing Connection.
+     */
+    @SneakyThrows
+    @Operation(summary = "Update an existing Connection", description = "Update details of an existing Connection by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Connection updated",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Connection.class))}),
+            @ApiResponse(responseCode = "404", description = "Connection not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
+    })
+    @PutMapping("/updateConnection/{id}")
+    public ResponseEntity<StandardResponse<Connection>> updateConnection(@PathVariable Long id, @Valid @RequestBody Connection connectionRequest) {
+        Connection updatedConnection = connectionService.save(connectionRequest);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Connection updated successfully", updatedConnection));
+    }
+
+    /**
+     * Deletes a connection.
+     */
+    @Operation(summary = "Delete a Connection", description = "Remove a Connection from the list by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Connection deleted", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Connection not found", content = @Content)
+    })
+    @DeleteMapping("/deleteConnection/{id}")
+    public ResponseEntity<StandardResponse<Connection>> deleteConnection(@PathVariable Long id) {
+        connectionService.deleteById(id);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Connection  with id: %d is deleted".formatted(id), null));
+    }
+}
+

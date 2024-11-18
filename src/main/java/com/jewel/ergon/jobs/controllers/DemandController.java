@@ -107,7 +107,7 @@ public class DemandController {
     @DeleteMapping("/deleteDemand/{id}")
     public ResponseEntity<StandardResponse<Demand>> deleteDemand(@PathVariable Long id) {
          demandService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), " Demand with id :id is deleted", null));
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Demand with id: %d is deleted".formatted(id), null));
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.jewel.ergon.jobs.utilis;
 
+import com.jewel.ergon.jobs.exceptions.IncompatibleSourceAndTargetFieldsTypesException;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -18,19 +20,18 @@ public class MappingData {
     };
 
 
-
-
-
     /**
-     *A method useful for updating an entity in jpa, it gets value from a source object field ,
-     *and set it in the target object field that have the same name
+     * A method useful for updating an entity in jpa, it gets value from a source object field ,
+     * and set it in the target object field that have the same name and type
+     *
      * @param source source object to get values from
-     * @param target  target object to set values into
-     * @param <S> type of the source
-     * @param <T>  type of the target
-     * @throws IllegalAccessException thrown if source or target are null
+     * @param target target object to set values into
+     * @param <S>    type of the source
+     * @param <T>    type of the target
+     * @throws IllegalArgumentException thrown if source or target are null
+     * @throws IllegalAccessException   thrown if source or target are null
      */
-    public static <S, T> void getAndSet(S source, T target) throws IllegalAccessException {
+    public static <S, T> void getAndSet(S source, T target) throws IllegalAccessException, IllegalArgumentException, IncompatibleSourceAndTargetFieldsTypesException {
         if (source == null || target == null) {
             throw new IllegalArgumentException("Source or target cannot be null");
         }
@@ -50,12 +51,12 @@ public class MappingData {
         // Iterate over target fields, mapping only fields that match by name and type
         for (Field targetField : targetFields) {
             Field sourceField = sourceFieldMap.get(targetField.getName());
-            if (sourceField != null && targetField.getType().isAssignableFrom(sourceField.getType())) {
-                sourceField.setAccessible(true);
-                targetField.setAccessible(true);
-                Object value = sourceField.get(source);
-                targetField.set(target, value);
-            }
+            if (!targetField.getType().isAssignableFrom(sourceField.getType()))
+                throw new IncompatibleSourceAndTargetFieldsTypesException("incompatible type for field %s  of type %s ".formatted(targetField, targetField.getType()));
+            sourceField.setAccessible(true);
+            targetField.setAccessible(true);
+            Object value = sourceField.get(source);
+            targetField.set(target, value);
         }
     }
 

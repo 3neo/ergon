@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
-//TODO add currency
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

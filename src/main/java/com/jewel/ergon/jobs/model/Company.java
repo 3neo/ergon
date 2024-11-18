@@ -55,6 +55,7 @@ public class Company {
     private Boolean isInCV ;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<Experience> experiences ;
 
 }

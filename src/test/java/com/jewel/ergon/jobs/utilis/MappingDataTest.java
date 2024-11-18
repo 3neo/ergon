@@ -1,5 +1,6 @@
 package com.jewel.ergon.jobs.utilis;
 
+import com.jewel.ergon.jobs.exceptions.IncompatibleSourceAndTargetFieldsTypesException;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.Test;
@@ -9,12 +10,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-//TODO verify tests
+//TODO I have problem with exceptions
 class MappingDataTest {
 
     @Test
     public void testNullSource() {
-        IllegalAccessException thrown = assertThrows(IllegalAccessException.class, () -> {
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             MappingData.getAndSet(null, new Target());
         });
         assertEquals("Source or target cannot be null", thrown.getMessage());
@@ -22,7 +23,7 @@ class MappingDataTest {
 
     @Test
     public void testNullTarget() {
-        IllegalAccessException thrown = assertThrows(IllegalAccessException.class, () -> {
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             MappingData.getAndSet(new Source(), null);
         });
         assertEquals("Source or target cannot be null", thrown.getMessage());
@@ -30,22 +31,22 @@ class MappingDataTest {
 
     @Test
     public void testBothNull() {
-        IllegalAccessException thrown = assertThrows(IllegalAccessException.class, () -> {
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             MappingData.getAndSet(null, null);
         });
         assertEquals("Source or target cannot be null", thrown.getMessage());
     }
 
     @Test
-    public void testEmptyObjects() throws IllegalAccessException {
+    public void testEmptyObjects() throws Exception {
         Source source = new Source();
         Target target = new Target();
-        MappingData.getAndSet(source, target);
+            MappingData.getAndSet(source, target);
         // No assertion, just making sure no exceptions are thrown
     }
 
     @Test
-    public void testMatchingFields() throws IllegalAccessException {
+    public void testMatchingFields() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         Source source = new Source();
         source.setName("Test");
         Target target = new Target();
@@ -54,7 +55,7 @@ class MappingDataTest {
     }
 
     @Test
-    public void testNonMatchingFields() throws IllegalAccessException {
+    public void testNonMatchingFields() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         Source source = new Source();
         source.setName("Test");
         Target target = new Target();
@@ -64,7 +65,7 @@ class MappingDataTest {
     }
 
     @Test
-    public void testPrivateFields() throws IllegalAccessException {
+    public void testPrivateFields() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         Source source = new Source();
         source.setName("Test");
         Target target = new Target();
@@ -73,7 +74,7 @@ class MappingDataTest {
     }
 
     @Test
-    public void testFieldInSuperclass() throws IllegalAccessException {
+    public void testFieldInSuperclass() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         SourceWithParent source = new SourceWithParent();
         source.setParentName("Parent");
         TargetWithParent target = new TargetWithParent();
@@ -82,7 +83,7 @@ class MappingDataTest {
     }
 
     @Test
-    public void testPrimitiveToWrapperConversion() throws IllegalAccessException {
+    public void testPrimitiveToWrapperConversion() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         Source source = new Source();
         source.setAge(30);
         Target target = new Target();
@@ -91,7 +92,7 @@ class MappingDataTest {
     }
 
     @Test
-    public void testArrayField() throws IllegalAccessException {
+    public void testArrayField() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         Source source = new Source();
         source.setNumbers(new int[]{1, 2, 3});
         Target target = new Target();
@@ -100,7 +101,7 @@ class MappingDataTest {
     }
 
     @Test
-    public void testCollectionField() throws IllegalAccessException {
+    public void testCollectionField() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         Source source = new Source();
         source.setTags(List.of("tag1", "tag2"));
         Target target = new Target();
@@ -109,7 +110,7 @@ class MappingDataTest {
     }
 
     @Test
-    public void testFieldWithEnum() throws IllegalAccessException {
+    public void testFieldWithEnum() throws IllegalAccessException, IncompatibleSourceAndTargetFieldsTypesException {
         Source source = new Source();
         source.setColor(Color.RED);
         Target target = new Target();
@@ -124,7 +125,7 @@ class MappingDataTest {
     @Setter
     static class Source {
         private String name;
-        private int age;
+        private Integer age;
         private int[] numbers;
         private List<String> tags;
         private Color color;
