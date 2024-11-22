@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.URL;
 @ToString
 @Entity
 @Table(name = "connection")
-public class Connection {
+public class Connection  extends AbstractAuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

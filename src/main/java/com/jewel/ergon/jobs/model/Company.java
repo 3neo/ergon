@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-public class Company {
+public class Company extends AbstractAuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

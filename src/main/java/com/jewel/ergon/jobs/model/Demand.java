@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Entity
-public class Demand {
+public class Demand  extends AbstractAuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

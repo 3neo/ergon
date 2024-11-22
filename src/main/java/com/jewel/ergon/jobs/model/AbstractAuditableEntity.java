@@ -69,6 +69,7 @@ public abstract class AbstractAuditableEntity implements Serializable {
 
 
     //TODO ?
+    @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "jsonb") // Specifies that this column is of type jsonb in the database
     @Type(JsonType.class)              // Hibernate-specific annotation to handle jsonb types
     private Map<String, Object> details;

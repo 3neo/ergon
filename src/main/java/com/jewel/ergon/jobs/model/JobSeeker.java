@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "Job_seeker")
-public class JobSeeker {
+public class JobSeeker extends AbstractAuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

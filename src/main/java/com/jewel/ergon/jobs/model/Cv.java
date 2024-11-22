@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Entity
-public class Cv {
+public class Cv  extends AbstractAuditableEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

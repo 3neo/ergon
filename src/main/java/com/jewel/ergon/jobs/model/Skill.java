@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Entity
-public class Skill {
+public class Skill  extends AbstractAuditableEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "id", nullable = false)

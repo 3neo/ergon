@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-public class Education {
+public class Education extends AbstractAuditableEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Entity
-public class Contract {
+public class Contract   extends AbstractAuditableEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
