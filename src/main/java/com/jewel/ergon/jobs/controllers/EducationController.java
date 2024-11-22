@@ -12,14 +12,18 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+//TODO we fixed education class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/educations")
+@RequestMapping(value = "/api/v1/educations", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Education Controller", description = "API for managing educations")
 public class EducationController {
 
@@ -57,7 +61,9 @@ public class EducationController {
     @GetMapping("/getEducationById/{id}")
     public ResponseEntity<StandardResponse<Education>> getEducationById(@PathVariable Long id) {
         Optional<Education> education = educationService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Education retrieved successfully", education.orElseThrow()));
+        if (education.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Education retrieved successfully", education.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -102,8 +108,12 @@ public class EducationController {
     })
     @DeleteMapping("/deleteEducation/{id}")
     public ResponseEntity<StandardResponse<Education>> deleteEducation(@PathVariable Long id) {
-        educationService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Education with id: %d is deleted".formatted(id), null));
+        Optional<Education> education = educationService.findById(id);
+        if (education.isPresent()) {
+            educationService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Education with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -12,14 +12,18 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+//TODO we fixed experience class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/experiences")
+@RequestMapping(value = "/api/v1/experiences", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Experience Controller", description = "API for managing experiences")
 public class ExperienceController {
 
@@ -57,7 +61,9 @@ public class ExperienceController {
     @GetMapping("/getExperienceById/{id}")
     public ResponseEntity<StandardResponse<Experience>> getExperienceById(@PathVariable Long id) {
         Optional<Experience> experience = experienceService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Experience retrieved successfully", experience.orElseThrow()));
+        if (experience.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Experience retrieved successfully", experience.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -102,8 +108,12 @@ public class ExperienceController {
     })
     @DeleteMapping("/deleteExperience/{id}")
     public ResponseEntity<StandardResponse<Experience>> deleteExperience(@PathVariable Long id) {
-        experienceService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Experience with id: %d is deleted".formatted(id), null));
+        Optional<Experience> experience = experienceService.findById(id);
+        if (experience.isPresent()) {
+            experienceService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Experience with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

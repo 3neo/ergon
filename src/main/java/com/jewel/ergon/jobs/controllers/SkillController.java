@@ -12,14 +12,18 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+//TODO we fixed skill class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/skills")
+@RequestMapping(value = "/api/v1/skills", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Skill Controller", description = "API for managing skills")
 public class SkillController {
 
@@ -57,7 +61,9 @@ public class SkillController {
     @GetMapping("/getSkillById/{id}")
     public ResponseEntity<StandardResponse<Skill>> getSkillById(@PathVariable Long id) {
         Optional<Skill> skill = skillService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Skill retrieved successfully", skill.orElseThrow()));
+        if (skill.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Skill retrieved successfully", skill.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -102,8 +108,12 @@ public class SkillController {
     })
     @DeleteMapping("/deleteSkill/{id}")
     public ResponseEntity<StandardResponse<Skill>> deleteSkill(@PathVariable Long id) {
-        skillService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Skill with id: %d is deleted".formatted(id), null));
+        Optional<Skill> skill = skillService.findById(id);
+        if (skill.isPresent()) {
+            skillService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Skill with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

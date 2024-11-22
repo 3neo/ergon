@@ -12,14 +12,18 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+//TODO we fixed cv class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/cvs")
+@RequestMapping(value = "/api/v1/cvs", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Cv Controller", description = "API for managing cvs")
 public class CvController {
 
@@ -57,7 +61,9 @@ public class CvController {
     @GetMapping("/getCvById/{id}")
     public ResponseEntity<StandardResponse<Cv>> getCvById(@PathVariable Long id) {
         Optional<Cv> cv = cvService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Cv retrieved successfully", cv.orElseThrow()));
+        if (cv.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Cv retrieved successfully", cv.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -102,8 +108,12 @@ public class CvController {
     })
     @DeleteMapping("/deleteCv/{id}")
     public ResponseEntity<StandardResponse<Cv>> deleteCv(@PathVariable Long id) {
-        cvService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Cv with id: %d is deleted".formatted(id), null));
+        Optional<Cv> cv = cvService.findById(id);
+        if (cv.isPresent()) {
+            cvService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Cv with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

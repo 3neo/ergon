@@ -20,6 +20,8 @@ public class Cv {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Lob
     @Column(length = 2000)
     private String resumeText;
 
@@ -47,6 +49,7 @@ public class Cv {
     private String profile;
 
 
+
     @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "Cv_experiences",
@@ -66,5 +69,10 @@ public class Cv {
             inverseJoinColumns = @JoinColumn(name = "educations_id"))
     private Set<Education> educations = new LinkedHashSet<>();
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "version", nullable = false)
+    private Integer version;
 
 }

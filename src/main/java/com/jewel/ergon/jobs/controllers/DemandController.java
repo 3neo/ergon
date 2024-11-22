@@ -1,9 +1,6 @@
 package com.jewel.ergon.jobs.controllers;
 
-
-import com.jewel.ergon.jobs.dto.DemandResponseDto;
 import com.jewel.ergon.jobs.model.Demand;
-import com.jewel.ergon.jobs.model.Status;
 import com.jewel.ergon.jobs.services.DemandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +20,11 @@ import java.util.List;
 import java.util.Optional;
 
 
+//TODO we fixed demand class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/demands")
-@Tag(name = "Demand Controller", description = "API for managing job demands")
+@RequestMapping(value = "/api/v1/demands", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Demand Controller", description = "API for managing demands")
 public class DemandController {
 
     private final DemandService demandService;
@@ -35,13 +35,13 @@ public class DemandController {
     }
 
     /**
-     * Fetches all job demands for the user.
+     * Fetches all demands for the user.
      */
     @SneakyThrows
-    @Operation(summary = "Get all demands", description = "Retrieve a list of all job demands for the user.")
+    @Operation(summary = "Get all demands", description = "Retrieve a list of all demands for the user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of demands",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DemandResponseDto.class))})
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Demand.class))})
     })
     @GetMapping("/getAllDemands")
     public ResponseEntity<StandardResponse<List<Demand>>> getAllDemands() {
@@ -52,25 +52,27 @@ public class DemandController {
     /**
      * Fetches a demand by its unique identifier.
      */
-    @Operation(summary = "Get demand by ID", description = "Retrieve a specific job demand by its ID.")
+    @Operation(summary = "Get demand by ID", description = "Retrieve a specific demand by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Demand found",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DemandResponseDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Demand.class))}),
             @ApiResponse(responseCode = "404", description = "Demand not found", content = @Content)
     })
     @GetMapping("/getDemandById/{id}")
     public ResponseEntity<StandardResponse<Demand>> getDemandById(@PathVariable Long id) {
         Optional<Demand> demand = demandService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Demand retrieved successfully", demand.orElseThrow()));
+        if (demand.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Demand retrieved successfully", demand.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
-     * Creates a new job demand.
+     * Creates a new Demand.
      */
-    @Operation(summary = "Create a new demand", description = "Add a new job demand to the list.")
+    @Operation(summary = "Create a new demand", description = "Add a new demand to the list.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Demand created",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DemandResponseDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Demand.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
     @PostMapping("/createDemand")
@@ -80,50 +82,38 @@ public class DemandController {
     }
 
     /**
-     * Updates an existing job demand.
+     * Updates an existing Demand.
      */
     @SneakyThrows
-    @Operation(summary = "Update an existing demand", description = "Update details of an existing job demand by its ID.")
+    @Operation(summary = "Update an existing demand", description = "Update details of an existing demand by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Demand updated",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DemandResponseDto.class))}),
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Demand.class))}),
             @ApiResponse(responseCode = "404", description = "Demand not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
     @PutMapping("/updateDemand/{id}")
     public ResponseEntity<StandardResponse<Demand>> updateDemand(@PathVariable Long id, @Valid @RequestBody Demand demandRequest) {
-        Demand updatedDemand = demandService.updateDemand(id, demandRequest);
+        Demand updatedDemand = demandService.save(demandRequest);
         return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Demand updated successfully", updatedDemand));
     }
 
     /**
-     * Deletes a job demand.
+     * Deletes a demand.
      */
-    @Operation(summary = "Delete a demand", description = "Remove a job demand from the list by its ID.")
+    @Operation(summary = "Delete a demand", description = "Remove a demand from the list by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Demand deleted", content = @Content),
             @ApiResponse(responseCode = "404", description = "Demand not found", content = @Content)
     })
     @DeleteMapping("/deleteDemand/{id}")
     public ResponseEntity<StandardResponse<Demand>> deleteDemand(@PathVariable Long id) {
-         demandService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Demand with id: %d is deleted".formatted(id), null));
-    }
-
-    /**
-     * Fetches demands by their status.
-     */
-    @Operation(summary = "Get demands by status", description = "Retrieve all job demands with a specific status.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of demands by status",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = DemandResponseDto.class))})
-    })
-    @GetMapping("/getDemandsByStatus")
-    public ResponseEntity<StandardResponse<List<Demand>>> getDemandsByStatus(
-            @RequestParam Status status,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        List<Demand> demandsByStatus = demandService.getDemandsByStatus(status, page, size).getContent();
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Demands with specified status retrieved successfully", demandsByStatus));
+        Optional<Demand> demand = demandService.findById(id);
+        if (demand.isPresent()) {
+            demandService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Demand with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
+

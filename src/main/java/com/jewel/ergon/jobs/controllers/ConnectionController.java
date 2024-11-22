@@ -12,14 +12,18 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+//TODO we fixed connection class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/connections")
+@RequestMapping(value = "/api/v1/connections", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Connection Controller", description = "API for managing connections")
 public class ConnectionController {
 
@@ -57,13 +61,15 @@ public class ConnectionController {
     @GetMapping("/getConnectionById/{id}")
     public ResponseEntity<StandardResponse<Connection>> getConnectionById(@PathVariable Long id) {
         Optional<Connection> connection = connectionService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Connection retrieved successfully", connection.orElseThrow()));
+        if (connection.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Connection retrieved successfully", connection.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
      * Creates a new Connection.
      */
-    @Operation(summary = "Create a new connection", description = "Add a new Connection to the list.")
+    @Operation(summary = "Create a new connection", description = "Add a new connection to the list.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Connection created",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Connection.class))}),
@@ -79,7 +85,7 @@ public class ConnectionController {
      * Updates an existing Connection.
      */
     @SneakyThrows
-    @Operation(summary = "Update an existing Connection", description = "Update details of an existing Connection by its ID.")
+    @Operation(summary = "Update an existing connection", description = "Update details of an existing connection by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Connection updated",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Connection.class))}),
@@ -95,15 +101,19 @@ public class ConnectionController {
     /**
      * Deletes a connection.
      */
-    @Operation(summary = "Delete a Connection", description = "Remove a Connection from the list by its ID.")
+    @Operation(summary = "Delete a connection", description = "Remove a connection from the list by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Connection deleted", content = @Content),
             @ApiResponse(responseCode = "404", description = "Connection not found", content = @Content)
     })
     @DeleteMapping("/deleteConnection/{id}")
     public ResponseEntity<StandardResponse<Connection>> deleteConnection(@PathVariable Long id) {
-        connectionService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Connection  with id: %d is deleted".formatted(id), null));
+        Optional<Connection> connection = connectionService.findById(id);
+        if (connection.isPresent()) {
+            connectionService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Connection with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

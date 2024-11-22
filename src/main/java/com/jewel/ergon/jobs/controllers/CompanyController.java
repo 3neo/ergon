@@ -17,43 +17,46 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+//TODO we fixed company class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/companies")
-@Tag(name = "Company Controller", description = "API for managing companies ")
+@RequestMapping(value = "/api/v1/companys", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Company Controller", description = "API for managing companys")
 public class CompanyController {
 
     private final CompanyService companyService;
 
     @Autowired
     public CompanyController(CompanyService companyService) {
-        this.companyService =  companyService;
+        this.companyService = companyService;
     }
 
     /**
-     * Fetches all job demands for the user.
+     * Fetches all companys for the user.
      */
     @SneakyThrows
-    @Operation(summary = "Get all companies", description = "Retrieve a list of all companies for the user.")
+    @Operation(summary = "Get all companys", description = "Retrieve a list of all companys for the user.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of companies",
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of companys",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))})
     })
-    @GetMapping("/getAllCompanies")
-    public ResponseEntity<StandardResponse<List<Company>>> getAllCompanies() {
-        List<Company> companies = companyService.findAll();
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Companies retrieved successfully", companies));
+    @GetMapping("/getAllCompanys")
+    public ResponseEntity<StandardResponse<List<Company>>> getAllCompanys() {
+        List<Company> companys = companyService.findAll();
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Companys retrieved successfully", companys));
     }
 
     /**
-     * Fetches a demand by its unique identifier.
+     * Fetches a company by its unique identifier.
      */
-    @Operation(summary = "Get company by ID", description = "Retrieve a specific company  by its ID.")
+    @Operation(summary = "Get company by ID", description = "Retrieve a specific company by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Company found",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))}),
@@ -62,13 +65,15 @@ public class CompanyController {
     @GetMapping("/getCompanyById/{id}")
     public ResponseEntity<StandardResponse<Company>> getCompanyById(@PathVariable Long id) {
         Optional<Company> company = companyService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Company retrieved successfully", company.orElseThrow()));
+        if (company.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Company retrieved successfully", company.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
      * Creates a new Company.
      */
-    @Operation(summary = "Create a new company", description = "Add a new Company  to the list.")
+    @Operation(summary = "Create a new company", description = "Add a new company to the list.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Company created",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))}),
@@ -84,7 +89,7 @@ public class CompanyController {
      * Updates an existing Company.
      */
     @SneakyThrows
-    @Operation(summary = "Update an existing Company", description = "Update details of an existing Company by its ID.")
+    @Operation(summary = "Update an existing company", description = "Update details of an existing company by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Company updated",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))}),
@@ -98,18 +103,21 @@ public class CompanyController {
     }
 
     /**
-     * Deletes a job demand.
+     * Deletes a company.
      */
-    @Operation(summary = "Delete a Company", description = "Remove a Company  from the list by its ID.")
+    @Operation(summary = "Delete a company", description = "Remove a company from the list by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Company deleted", content = @Content),
             @ApiResponse(responseCode = "404", description = "Company not found", content = @Content)
     })
     @DeleteMapping("/deleteCompany/{id}")
-    public ResponseEntity<StandardResponse<Demand>> deleteDemand(@PathVariable Long id) {
-        companyService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Company with id: %d is deleted".formatted(id), null));
+    public ResponseEntity<StandardResponse<Company>> deleteCompany(@PathVariable Long id) {
+        Optional<Company> company = companyService.findById(id);
+        if (company.isPresent()) {
+            companyService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Company with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
-
 }
 

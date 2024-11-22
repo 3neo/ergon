@@ -10,7 +10,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-//TODO I have problem with exceptions
 class MappingDataTest {
 
     @Test

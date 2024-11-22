@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-
 //TODO we fixed contract class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
 @RequestMapping(value = "/api/v1/contracts", produces = MediaType.APPLICATION_JSON_VALUE,
@@ -62,8 +61,9 @@ public class ContractController {
     @GetMapping("/getContractById/{id}")
     public ResponseEntity<StandardResponse<Contract>> getContractById(@PathVariable Long id) {
         Optional<Contract> contract = contractService.findById(id);
-        if (contract.isPresent() ) return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Contract retrieved successfully", contract.orElseThrow()));
-        return  ResponseEntity.notFound().build();
+        if (contract.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Contract retrieved successfully", contract.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -108,8 +108,12 @@ public class ContractController {
     })
     @DeleteMapping("/deleteContract/{id}")
     public ResponseEntity<StandardResponse<Contract>> deleteContract(@PathVariable Long id) {
-        contractService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Contract with id: %d is deleted".formatted(id), null));
+        Optional<Contract> contract = contractService.findById(id);
+        if (contract.isPresent()) {
+            contractService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Contract with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

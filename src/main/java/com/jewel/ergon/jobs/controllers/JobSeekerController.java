@@ -12,14 +12,18 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+//TODO we fixed jobSeeker class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/jobSeekers")
+@RequestMapping(value = "/api/v1/jobSeekers", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "JobSeeker Controller", description = "API for managing jobSeekers")
 public class JobSeekerController {
 
@@ -57,7 +61,9 @@ public class JobSeekerController {
     @GetMapping("/getJobSeekerById/{id}")
     public ResponseEntity<StandardResponse<JobSeeker>> getJobSeekerById(@PathVariable Long id) {
         Optional<JobSeeker> jobSeeker = jobSeekerService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "JobSeeker retrieved successfully", jobSeeker.orElseThrow()));
+        if (jobSeeker.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "JobSeeker retrieved successfully", jobSeeker.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -102,8 +108,12 @@ public class JobSeekerController {
     })
     @DeleteMapping("/deleteJobSeeker/{id}")
     public ResponseEntity<StandardResponse<JobSeeker>> deleteJobSeeker(@PathVariable Long id) {
-        jobSeekerService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "JobSeeker with id: %d is deleted".formatted(id), null));
+        Optional<JobSeeker> jobSeeker = jobSeekerService.findById(id);
+        if (jobSeeker.isPresent()) {
+            jobSeekerService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "JobSeeker with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

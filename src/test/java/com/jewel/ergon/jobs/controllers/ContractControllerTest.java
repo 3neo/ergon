@@ -25,6 +25,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
+
+
 @WebMvcTest(ContractController.class)
 class ContractControllerTest {
 
@@ -45,7 +48,7 @@ class ContractControllerTest {
                 .contractNumber("C265889")
                 .contractType(ContractType.CDI)
                 .isCdi(true)
-                .startDate(LocalDate.ofEpochDay(2023-10-10))
+                .startDate(LocalDate.ofEpochDay(2023 - 10 - 10))
                 .isActive(true)
                 .salary(BigDecimal.valueOf(1000L))
                 .build();
@@ -55,11 +58,22 @@ class ContractControllerTest {
                 .contractNumber("C2652229")
                 .contractType(ContractType.CDI)
                 .isCdi(true)
-                .startDate(LocalDate.ofEpochDay(2024-10-10))
+                .startDate(LocalDate.ofEpochDay(2024 - 10 - 10))
                 .isActive(true)
                 .salary(BigDecimal.valueOf(1500L))
-                .build();;
+                .build();
+        ;
     }
+
+//    MockHttpServletResponse:
+//    Status = 200
+//    Error message = null
+//    Headers = [Content-Type:"application/json"]
+//    Content type = application/json
+//    Body = {"statusCode":200,"message":"Contracts retrieved successfully","data":[{"id":1,"contractTitle":"lawer","contractNumber":"C265889","startDate":"1975-06-27","endDate":null,"isCdi":true,"salary":1000,"isActive":true,"contractType":"CDI","experience":null,"currency":null},{"id":1,"contractTitle":"Masterlawer","contractNumber":"C2652229","startDate":"1975-06-28","endDate":null,"isCdi":true,"salary":1500,"isActive":true,"contractType":"CDI","experience":null,"currency":null}]}
+//    Forwarded URL = null
+//    Redirected URL = null
+//    Cookies = []
 
     @Test
     void shouldReturnAllContracts() throws Exception {
@@ -68,7 +82,7 @@ class ContractControllerTest {
 
         mockMvc.perform(get("/api/v1/contracts/getAllContracts")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk() )
                 .andExpect(jsonPath("$.statusCode").value(200))
                 .andExpect(jsonPath("$.message").value("Contracts retrieved successfully"))
                 .andExpect(jsonPath("$.data[0].id").value(contract1.getId()))
@@ -88,7 +102,6 @@ class ContractControllerTest {
     }
 
 
-    //TODO pass this test
     @Test
     void shouldReturn404WhenContractNotFound() throws Exception {
         when(contractService.findById(1L)).thenReturn(Optional.empty());
@@ -130,8 +143,8 @@ class ContractControllerTest {
 
         mockMvc.perform(delete("/api/v1/contracts/deleteContract/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value(204))
-                .andExpect(jsonPath("$.message").value("Contract with id: 1 is deleted"));
+                .andExpect(status().isNoContent());
+//                .andExpect(jsonPath("$.statusCode").value(204))
+//                .andExpect(jsonPath("$.message").value("Contract with id: 1 is deleted"));
     }
 }

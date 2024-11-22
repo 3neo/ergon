@@ -7,6 +7,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.modulith.core.ApplicationModules;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+
+
 @EnableAsync
 @SpringBootApplication
 public class ErgonApplication {

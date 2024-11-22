@@ -12,14 +12,18 @@ import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+
+//TODO we fixed currency class to pass tests , so we should fix the other controllers exactly the same way
 @RestController
-@RequestMapping("/api/v1/currencies")
+@RequestMapping(value = "/api/v1/currencys", produces = MediaType.APPLICATION_JSON_VALUE,
+        consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Currency Controller", description = "API for managing currencys")
 public class CurrencyController {
 
@@ -57,7 +61,9 @@ public class CurrencyController {
     @GetMapping("/getCurrencyById/{id}")
     public ResponseEntity<StandardResponse<Currency>> getCurrencyById(@PathVariable Long id) {
         Optional<Currency> currency = currencyService.findById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Currency retrieved successfully", currency.orElseThrow()));
+        if (currency.isPresent())
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Currency retrieved successfully", currency.orElseThrow()));
+        return ResponseEntity.notFound().build();
     }
 
     /**
@@ -102,8 +108,12 @@ public class CurrencyController {
     })
     @DeleteMapping("/deleteCurrency/{id}")
     public ResponseEntity<StandardResponse<Currency>> deleteCurrency(@PathVariable Long id) {
-        currencyService.deleteById(id);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Currency with id: %d is deleted".formatted(id), null));
+        Optional<Currency> currency = currencyService.findById(id);
+        if (currency.isPresent()) {
+            currencyService.deleteById(id);
+            return ResponseEntity.ok(new StandardResponse<>(HttpStatus.NO_CONTENT.value(), "Currency with id: %d is deleted".formatted(id), null));
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 
-//TODO test this method (critical)
 public class MappingData {
 
     private static final int CACHE_LIMIT = 100;

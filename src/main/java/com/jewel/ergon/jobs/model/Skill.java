@@ -25,6 +25,9 @@ public class Skill {
     @Column(name = "category", nullable = false)
     private String category;
 
+    @Column(length = 500)
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "skill_level", nullable = false)
     private SkillLevel skillLevel;

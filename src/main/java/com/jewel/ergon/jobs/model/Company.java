@@ -37,9 +37,8 @@ public class Company {
     @Column(name = "sector", nullable = false)
     private Sector sector;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "location", nullable = false)
-    private Location location;
+    private String location;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "company_type", nullable = false)
