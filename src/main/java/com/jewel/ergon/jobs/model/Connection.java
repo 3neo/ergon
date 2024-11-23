@@ -26,8 +26,8 @@ public class Connection  extends AbstractAuditableEntity {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "company_id", nullable = false)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Company company;
 
     @Email

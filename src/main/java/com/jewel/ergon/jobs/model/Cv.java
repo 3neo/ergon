@@ -41,8 +41,8 @@ public class Cv  extends AbstractAuditableEntity{
     private Byte[] file;
 
 
-    @ManyToOne
-    @JoinColumn(name = "Job_seeker_id", nullable = false)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private JobSeeker jobseeker;
 
     @Column(name = "profile", nullable = false)
@@ -72,7 +72,7 @@ public class Cv  extends AbstractAuditableEntity{
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "version", nullable = false)
-    private Integer version;
+    @Column(name = "version_cv", nullable = false)
+    private Integer versionCV;
 
 }

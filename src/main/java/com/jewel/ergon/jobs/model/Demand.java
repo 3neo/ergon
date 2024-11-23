@@ -19,12 +19,12 @@ public class Demand  extends AbstractAuditableEntity{
     @Column(nullable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "job_seeker_id", nullable = false)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private JobSeeker jobseeker;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Company company;
 
     @Column(nullable = false)

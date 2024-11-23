@@ -27,8 +27,7 @@ public class Experience  extends AbstractAuditableEntity{
 
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "company_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Company company;
 
     @PastOrPresent

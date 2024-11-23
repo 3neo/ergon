@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedBy;
@@ -21,19 +19,20 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class) // Enables JPA auditing
+//@EntityListeners(AuditingEntityListener.class) // Enables JPA auditing
 @Getter
 @Setter
 @ToString
 @Where(clause = "deleted = false") // Automatically excludes soft-deleted records
 public abstract class AbstractAuditableEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
+//TODO fix this double id issue
+
   //  @Type(value = ) // Use BINARY(16) in production databases for efficiency
-    @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private UUID id;
+    @Column(name = "uuid", updatable = false, nullable = false, unique = true)
+    private String uuid;
 
     @CreatedDate
     @NotNull
@@ -71,8 +70,9 @@ public abstract class AbstractAuditableEntity implements Serializable {
     //TODO ?
     @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "jsonb") // Specifies that this column is of type jsonb in the database
-    @Type(JsonType.class)              // Hibernate-specific annotation to handle jsonb types
-    private Map<String, Object> details;
+    @Type(JsonType.class)
+    @ToString.Exclude              // Hibernate-specific annotation to handle jsonb types
+    private Map<String, Object> attr;
 
     /**
      * Soft delete the entity.
@@ -95,6 +95,9 @@ public abstract class AbstractAuditableEntity implements Serializable {
     @PrePersist
     protected void beforePersist() {
         // Custom pre-persist actions
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID().toString();
+        }
     }
 
     /**

@@ -43,8 +43,7 @@ public class Education extends AbstractAuditableEntity{
     private Boolean isInProgress = false;
 
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "job_seeker_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private JobSeeker jobseeker;
 
     @ManyToMany(mappedBy = "educations", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
