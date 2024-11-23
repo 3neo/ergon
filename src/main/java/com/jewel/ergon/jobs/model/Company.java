@@ -1,5 +1,6 @@
 package com.jewel.ergon.jobs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class Company extends AbstractAuditableEntity{
 
     @Column(nullable = false)
     private String address;
+
 
     @ToString.Exclude
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -61,7 +61,7 @@ public abstract class AbstractAuditableEntity implements Serializable {
     @Column(name = "version", nullable = false)
     private long version; // Changed to long for high-concurrency systems
 
-    @JsonIgnore // Exclude from serialization to ensure tenant security
+  //  @JsonIgnore // Exclude from serialization to ensure tenant security
     @NotNull
     @Column(name = "tenant_id", nullable = false, length = 50)
     private String tenantId; // For multi-tenancy
