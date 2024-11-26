@@ -25,11 +25,12 @@ public class Company extends AbstractAuditableEntity{
     @Column(nullable = false)
     private String address;
 
-
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Demand> demands;
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Connection> connections;
@@ -55,6 +56,7 @@ public class Company extends AbstractAuditableEntity{
     @Column(name = "is_in_my_cv", nullable = false)
     private Boolean isInCV ;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Experience> experiences ;

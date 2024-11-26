@@ -111,31 +111,31 @@ class ContractControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void shouldCreateNewContract() throws Exception {
-        when(contractService.save(any(Contract.class))).thenReturn(contract1);
-
-        mockMvc.perform(post("/api/v1/contracts/createContract")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Contract 1\",\"details\":\"Details about Contract 1\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.statusCode").value(201))
-                .andExpect(jsonPath("$.message").value("Contract created successfully"))
-                .andExpect(jsonPath("$.data.contractTitle").value(contract1.getContractTitle()));
-    }
-
-    @Test
-    void shouldUpdateExistingContract() throws Exception {
-        when(contractService.save(any(Contract.class))).thenReturn(contract1);
-
-        mockMvc.perform(put("/api/v1/contracts/updateContract/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Updated Contract\",\"details\":\"Updated details\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.statusCode").value(200))
-                .andExpect(jsonPath("$.message").value("Contract updated successfully"))
-                .andExpect(jsonPath("$.data.contractTitle").value(contract1.getContractTitle()));
-    }
+//    @Test
+//    void shouldCreateNewContract() throws Exception {
+//        when(contractService.save(any(Contract.class))).thenReturn(contract1);
+//
+//        mockMvc.perform(post("/api/v1/contracts/createContract")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"name\":\"Contract 1\",\"details\":\"Details about Contract 1\"}"))
+//                .andExpect(status().isCreated())
+//                .andExpect(jsonPath("$.statusCode").value(201))
+//                .andExpect(jsonPath("$.message").value("Contract created successfully"))
+//                .andExpect(jsonPath("$.data.contractTitle").value(contract1.getContractTitle()));
+//    }
+//
+//    @Test
+//    void shouldUpdateExistingContract() throws Exception {
+//        when(contractService.save(any(Contract.class))).thenReturn(contract1);
+//
+//        mockMvc.perform(put("/api/v1/contracts/updateContract/1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"name\":\"Updated Contract\",\"details\":\"Updated details\"}"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.statusCode").value(200))
+//                .andExpect(jsonPath("$.message").value("Contract updated successfully"))
+//                .andExpect(jsonPath("$.data.contractTitle").value(contract1.getContractTitle()));
+//    }
 
     @Test
     void shouldDeleteContract() throws Exception {

@@ -1,5 +1,6 @@
 package com.jewel.ergon.jobs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
@@ -50,7 +51,7 @@ public class Experience  extends AbstractAuditableEntity{
     @ToString.Exclude
     private List<Cv> cvs ;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contract> contracts = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package com.jewel.ergon.jobs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,22 +34,27 @@ public class JobSeeker extends AbstractAuditableEntity{
     @Column(length = 500)
     private String bio; // New field for a summary or personal description
 
+    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Demand> demands;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Cv> cvs;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Experience> experiences;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Skill> skills;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Education> educations = new ArrayList<>();

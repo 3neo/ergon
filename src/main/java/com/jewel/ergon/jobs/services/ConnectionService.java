@@ -1,23 +1,45 @@
 package com.jewel.ergon.jobs.services;
 
+import com.jewel.ergon.jobs.model.Company;
 import com.jewel.ergon.jobs.model.Connection;
 import com.jewel.ergon.jobs.repo.CompanyRepository;
 import com.jewel.ergon.jobs.repo.ConnectionRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class ConnectionService extends  CrudServiceImpl<Connection, Long> {
+public class ConnectionService extends CrudServiceImpl<Connection, Long> {
     private final ConnectionRepository connectionRepository;
+    private final CompanyRepository companyRepository;
 
-    public ConnectionService(ConnectionRepository connectionRepository) {
+    public ConnectionService(ConnectionRepository connectionRepository, CompanyRepository companyRepository) {
         this.connectionRepository = connectionRepository;
+        this.companyRepository = companyRepository;
     }
 
 
     @Override
     protected ConnectionRepository getRepository() {
-        return this.connectionRepository ;
+        return this.connectionRepository;
     }
+
+//    /**
+//     * @param entity
+//     * @return
+//     */
+//    @Transactional
+//    @Override
+//    public Connection save(final Connection entity) {
+//        if (entity == null) throw new IllegalArgumentException("Connection must not be null");
+//        if (entity.getCompany() == null || entity.getCompany().getId() == null) {
+//            throw new IllegalArgumentException("Company must be provided with a valid ID");
+//        }
+//        Company company = companyRepository.findById(entity.getCompany().getId())
+//                .orElseThrow(() -> new EntityNotFoundException("Company not found"));
+//        entity.setCompany(company);
+//        return connectionRepository.save(entity);
+//    }
 }
