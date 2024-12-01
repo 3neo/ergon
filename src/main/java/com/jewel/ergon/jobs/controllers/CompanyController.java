@@ -1,12 +1,8 @@
 package com.jewel.ergon.jobs.controllers;
 
 
-import com.jewel.ergon.jobs.dto.DemandResponseDto;
 import com.jewel.ergon.jobs.model.Company;
-import com.jewel.ergon.jobs.model.Demand;
-import com.jewel.ergon.jobs.model.Status;
 import com.jewel.ergon.jobs.services.CompanyService;
-import com.jewel.ergon.jobs.services.DemandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

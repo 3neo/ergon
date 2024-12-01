@@ -3,12 +3,10 @@ package com.jewel.ergon.jobs.controllers;
 
 import com.jewel.ergon.jobs.model.Contract;
 import com.jewel.ergon.jobs.model.ContractType;
-import com.jewel.ergon.jobs.model.Currency;
-import com.jewel.ergon.jobs.services.ContractService;
+import com.jewel.ergon.jobs.model.Skill;
+import com.jewel.ergon.jobs.services.CrudService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,7 +33,7 @@ class ContractControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ContractService contractService;
+    private CrudService<Contract,Long> contractService;
 
     private Contract contract1;
     private Contract contract2;
