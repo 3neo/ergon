@@ -11,6 +11,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-//TODO we fixed contract class to pass tests , so we should fix the other controllers exactly the same way
+
 @RestController
 @RequestMapping(value = "/api/v1/contracts", produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -44,8 +48,17 @@ public class ContractController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Contract.class))})
     })
     @GetMapping("/getAllContracts")
-    public ResponseEntity<StandardResponse<List<Contract>>> getAllContracts() {
-        List<Contract> contracts = contractService.findAll();
+    public ResponseEntity<StandardResponse<Page<Contract>>> getAllContracts(@RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size,
+                                                                            @RequestParam(defaultValue = "id,asc") String[] sort) {
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        Page<Contract> contracts = contractService.findAll(pageable);
         return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Contracts retrieved successfully", contracts));
     }
 

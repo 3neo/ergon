@@ -1,6 +1,9 @@
 package com.jewel.ergon.jobs.services;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +13,7 @@ public interface CrudService<T, ID> {
 
     Optional<T> findById(ID id); // Find an entity by its ID
 
-    List<T> findAll(); // Retrieve all entities
+    Page<T> findAll(Pageable p); // Retrieve all entities
 
     void deleteById(ID id); // Delete an entity by its ID
 }

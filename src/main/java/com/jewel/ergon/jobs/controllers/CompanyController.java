@@ -12,6 +12,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +24,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-//TODO we fixed company class to pass tests , so we should fix the other controllers exactly the same way
+
 @RestController
-@RequestMapping(value = "/api/v1/companys", produces = MediaType.APPLICATION_JSON_VALUE,
+@RequestMapping(value = "/api/v1/companies", produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Company Controller", description = "API for managing companys")
 public class CompanyController {
@@ -43,10 +47,19 @@ public class CompanyController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of companys",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))})
     })
-    @GetMapping("/getAllCompanys")
-    public ResponseEntity<StandardResponse<List<Company>>> getAllCompanys() {
-        List<Company> companys = companyService.findAll();
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Companys retrieved successfully", companys));
+    @GetMapping("/getAllCompanies")
+    public ResponseEntity<StandardResponse<Page<Company>>> getAllCompanies(@RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Company> companies = companyService.findAll(pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Companys retrieved successfully", companies));
     }
 
     /**

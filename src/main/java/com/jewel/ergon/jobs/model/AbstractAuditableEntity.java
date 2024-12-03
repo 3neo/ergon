@@ -30,7 +30,7 @@ public abstract class AbstractAuditableEntity implements Serializable {
 
 //TODO fix this double id issue
 
-  //  @Type(value = ) // Use BINARY(16) in production databases for efficiency
+    //  @Type(value = ) // Use BINARY(16) in production databases for efficiency
     @Column(name = "uuid", updatable = false, nullable = false, unique = true)
     private String uuid;
 
@@ -61,7 +61,7 @@ public abstract class AbstractAuditableEntity implements Serializable {
     @Column(name = "version", nullable = false)
     private long version; // Changed to long for high-concurrency systems
 
-  //  @JsonIgnore // Exclude from serialization to ensure tenant security
+    //  @JsonIgnore // Exclude from serialization to ensure tenant security
     @NotNull
     @Column(name = "tenant_id", nullable = false, length = 50)
     private String tenantId; // For multi-tenancy
@@ -98,6 +98,14 @@ public abstract class AbstractAuditableEntity implements Serializable {
         if (this.uuid == null) {
             this.uuid = UUID.randomUUID().toString();
         }
+        if (this.createdAt == null) {
+            this.createdAt = ZonedDateTime.now();
+        }
+
+        if (this.getCreatedBy() == null) {
+            this.createdBy = getCurrentUsername();
+        }
+
     }
 
     /**
@@ -106,6 +114,9 @@ public abstract class AbstractAuditableEntity implements Serializable {
     @PreUpdate
     protected void beforeUpdate() {
         // Custom pre-update actions
+        this.updatedAt = ZonedDateTime.now();
+        this.modifiedBy = getCurrentUsername();
+
     }
 
     /**
@@ -118,4 +129,19 @@ public abstract class AbstractAuditableEntity implements Serializable {
             this.createdAt = createdAt;
         }
     }
+
+
+    private String getCurrentUsername() {
+
+        //TODO should be implemented after adding spring Security
+
+        // Get the currently authenticated user from Spring Security context
+//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    if (principal instanceof User) {
+//      return ((User) principal).getUsername(); // Extract the username from SecurityContext
+//    }
+        return "unknown"; // Default if no authenticated user found
+    }
+
+
 }
