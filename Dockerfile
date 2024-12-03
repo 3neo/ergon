@@ -5,10 +5,10 @@ FROM openjdk:22-jdk-slim
 WORKDIR /app
 
 # Copy the built JAR file into the container
-COPY target/ergon-app.jar ergon.jar
+COPY target/ergon-0.0.1-SNAPSHOT.jar  ergon.jar
 
 # Expose the port your Spring Boot application will run on
 EXPOSE 9993
 
 # Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "ergon.jar"]
