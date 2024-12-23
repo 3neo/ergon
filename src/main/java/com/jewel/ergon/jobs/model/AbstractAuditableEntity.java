@@ -34,26 +34,26 @@ public abstract class AbstractAuditableEntity implements Serializable {
     @Column(name = "uuid", updatable = false, nullable = false, unique = true)
     private String uuid;
 
-    @CreatedDate
-    @NotNull
+ //   @CreatedDate
+ //   @NotNull
     @Column(name = "created_at", nullable = false, updatable = false)
     private ZonedDateTime createdAt;
 
-    @LastModifiedDate
-    @NotNull
-    @Column(name = "updated_at", nullable = false)
+ //   @LastModifiedDate
+ //   @NotNull
+    @Column(name = "updated_at" )     //, nullable = false)
     private ZonedDateTime updatedAt;
 
-    @CreatedBy
-    @NotNull
+ //   @CreatedBy
+ //   @NotNull
     @Column(name = "created_by", nullable = false, updatable = false, length = 100)
     private String createdBy;
 
-    @LastModifiedBy
+ //   @LastModifiedBy
     @Column(name = "modified_by", length = 100)
     private String modifiedBy;
 
-    @NotNull
+ //   @NotNull
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
@@ -62,8 +62,8 @@ public abstract class AbstractAuditableEntity implements Serializable {
     private long version; // Changed to long for high-concurrency systems
 
     //  @JsonIgnore // Exclude from serialization to ensure tenant security
-    @NotNull
-    @Column(name = "tenant_id", nullable = false, length = 50)
+ //   @NotNull
+    @Column(name = "tenant_id", length = 50)   //, nullable = false
     private String tenantId; // For multi-tenancy
 
 

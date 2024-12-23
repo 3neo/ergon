@@ -27,12 +27,12 @@ public class Company extends AbstractAuditableEntity{
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL )             //, orphanRemoval = true)
     private List<Demand> demands;
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Connection> connections;
 
 
@@ -57,7 +57,7 @@ public class Company extends AbstractAuditableEntity{
     private Boolean isInCV ;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Experience> experiences ;
 

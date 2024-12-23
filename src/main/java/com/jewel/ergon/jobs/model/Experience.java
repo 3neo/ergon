@@ -52,7 +52,7 @@ public class Experience  extends AbstractAuditableEntity{
     private List<Cv> cvs ;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL)
     private List<Contract> contracts = new ArrayList<>();
 
 }

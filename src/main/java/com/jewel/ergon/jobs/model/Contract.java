@@ -21,7 +21,7 @@ public class Contract   extends AbstractAuditableEntity{
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "contract_title")
+    @Column(name = "contract_title", nullable = false)
     private String contractTitle;
 
     @Column(name = "contract_number", nullable = false, unique = true)
@@ -49,12 +49,12 @@ public class Contract   extends AbstractAuditableEntity{
     @Column(name = "contract_type", nullable = false)
     private ContractType contractType;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(nullable = false)
     private Experience experience;
 
-    @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn
     private Currency currency;
 
 }

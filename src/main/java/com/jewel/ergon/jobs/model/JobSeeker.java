@@ -36,26 +36,26 @@ public class JobSeeker extends AbstractAuditableEntity{
 
     @JsonIgnore
     @ToString.Exclude
-    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL)
     private List<Demand> demands;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Cv> cvs;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Experience> experiences;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Skill> skills;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "jobseeker", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Education> educations = new ArrayList<>();
 
@@ -64,7 +64,7 @@ public class JobSeeker extends AbstractAuditableEntity{
 
     @Lob
     @Column(name = "image")
-    private Byte[] image;
+    private byte[] image;
 
     @Column(name = "address", nullable = false)
     private String address;

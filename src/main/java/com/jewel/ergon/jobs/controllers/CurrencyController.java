@@ -25,7 +25,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping(value = "/api/v1/currencys", produces = MediaType.APPLICATION_JSON_VALUE,
+@RequestMapping(value = "/api/v1/currencies", produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Currency Controller", description = "API for managing currencys")
 public class CurrencyController {
@@ -46,7 +46,7 @@ public class CurrencyController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of currencys",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Currency.class))})
     })
-    @GetMapping("/getAllCurrencys")
+    @GetMapping("/getAllCurrencies")
     public ResponseEntity<StandardResponse<Page<Currency>>> getAllCurrencies(@RequestParam(defaultValue = "0") int page,
                                                                              @RequestParam(defaultValue = "10") int size,
                                                                              @RequestParam(defaultValue = "id,asc") String[] sort) {
