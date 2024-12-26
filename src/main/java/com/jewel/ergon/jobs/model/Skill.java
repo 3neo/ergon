@@ -32,15 +32,19 @@ public class Skill  extends AbstractAuditableEntity{
     @Column(name = "skill_level", nullable = false)
     private SkillLevel skillLevel;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(nullable = false)
     private JobSeeker jobseeker;
 
 
-    @ManyToMany(mappedBy = "skills", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "skills", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private Set<Cv> cvs = new LinkedHashSet<>();
 
 
+    @ManyToOne(cascade = {CascadeType.ALL})
+    private Demand demand;
+
+    @Column(name = "is_acquired", nullable = false)
+    private Boolean isAcquired = false;
 
 }

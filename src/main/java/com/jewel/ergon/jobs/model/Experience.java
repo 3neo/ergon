@@ -27,8 +27,8 @@ public class Experience  extends AbstractAuditableEntity{
 
 
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(nullable = false)
     private Company company;
 
     @PastOrPresent
@@ -39,20 +39,22 @@ public class Experience  extends AbstractAuditableEntity{
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.ALL, optional = false , fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_seeker_id", nullable = false)
+
+    // ALTER TABLE experience DROP COLUMN jobseeker_id;   to fix an insert problem
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "job_seeker_id",nullable = false)
     private JobSeeker jobseeker;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @ManyToMany(mappedBy = "experiences", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @ToString.Exclude
+
+    //TODO use set ?
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "experiences", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Cv> cvs ;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "experience", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "experience", cascade = CascadeType.ALL)
     private List<Contract> contracts = new ArrayList<>();
 
 }

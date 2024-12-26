@@ -46,7 +46,7 @@ public class Connection  extends AbstractAuditableEntity {
 
     @URL
     @Column(name = "linked_in_url")
-    private String linkedInUrl;
+    private java.net.URL linkedInUrl;
 
     @Column(name = "is_connected_on_linked_in", nullable = false)
     private Boolean isConnectedOnLinkedIn;

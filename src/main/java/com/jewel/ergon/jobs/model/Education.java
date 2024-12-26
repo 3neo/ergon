@@ -42,11 +42,11 @@ public class Education extends AbstractAuditableEntity{
     @Column(name = "is_in_progress", nullable = false)
     private Boolean isInProgress = false;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(nullable = false)
     private JobSeeker jobseeker;
 
-    @ManyToMany(mappedBy = "educations", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "educations", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Cv> cvs = new ArrayList<>();
 
 }

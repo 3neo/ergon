@@ -1,5 +1,6 @@
 package com.jewel.ergon.jobs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -49,7 +50,7 @@ public class Cv  extends AbstractAuditableEntity{
     private String profile;
 
 
-
+    @JsonIgnore
     @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "Cv_experiences",
@@ -57,11 +58,14 @@ public class Cv  extends AbstractAuditableEntity{
             inverseJoinColumns = @JoinColumn(name = "experiences_id"))
     private Set<Experience> experiences = new LinkedHashSet<>();
 
+    @JsonIgnore
     @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(joinColumns = @JoinColumn(name = "cv_id"))
     private Set<Skill> skills = new LinkedHashSet<>();
 
+
+    @JsonIgnore
     @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "Cv_educations",

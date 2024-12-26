@@ -1,9 +1,14 @@
 package com.jewel.ergon.jobs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -19,12 +24,12 @@ public class Demand  extends AbstractAuditableEntity{
     @Column(nullable = false)
     private Long id;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private JobSeeker jobseeker;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Company company;
 
     @Column(nullable = false)
@@ -45,5 +50,19 @@ public class Demand  extends AbstractAuditableEntity{
     @Enumerated(EnumType.STRING)
     @Column(name = "demand_type", nullable = false)
     private DemandType demandType;
+
+    @Column(name = "date_start", nullable = false)
+    private LocalDate dateStart;
+
+    @NotNull(message = "jobLink should not be null")
+    @Column(name = "job_link", nullable = false)
+    private URL jobLink;
+
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "demand", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> demandedSkills = new ArrayList<>();
 
 }
