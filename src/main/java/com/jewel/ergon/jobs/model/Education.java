@@ -46,7 +46,9 @@ public class Education extends AbstractAuditableEntity{
     @JoinColumn(nullable = false)
     private JobSeeker jobseeker;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "educations", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    private List<Cv> cvs = new ArrayList<>();
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "cv_id", nullable = false)
+    private Cv cv;
 
 }

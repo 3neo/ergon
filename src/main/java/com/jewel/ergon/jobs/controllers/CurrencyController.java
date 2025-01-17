@@ -32,6 +32,35 @@ public class CurrencyController {
 
     private final CurrencyService currencyService;
 
+
+    /**
+     * Fetches  Currencys using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all currencies EQL", description = "Retrieve a list of all currencies using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of currencies",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Currency.class))})
+    })
+    @GetMapping("/getAllCurrenciesByEql")
+    public ResponseEntity<StandardResponse<Page<Currency>>> getAllCompanies(@RequestParam(defaultValue = "") String query,
+                                                                            @RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size,
+                                                                            @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Currency> currencies = currencyService.filter(query, Currency.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Currencies retrieved successfully", currencies));
+    }
+
+
+
+
     @Autowired
     public CurrencyController(CurrencyService currencyService) {
         this.currencyService = currencyService;

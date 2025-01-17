@@ -15,7 +15,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "Job_seeker")
-public class JobSeeker extends AbstractAuditableEntity{
+public class JobSeeker extends AbstractAuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +63,7 @@ public class JobSeeker extends AbstractAuditableEntity{
     private String phone;
 
     @Lob
+    @JsonIgnore // Prevent serialization/deserialization of the image field
     @Column(name = "image")
     private byte[] image;
 

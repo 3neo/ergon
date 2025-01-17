@@ -37,6 +37,38 @@ public class ExperienceController {
         this.experienceService = experienceService;
     }
 
+
+    /**
+     * Fetches  Experiences using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all experiences using EQL", description = "Retrieve a list of all experiences using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of experiences",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Experience.class))})
+    })
+    @GetMapping("/getAllExperiencesByEql")
+    public ResponseEntity<StandardResponse<Page<Experience>>> getAllCompanies(@RequestParam(defaultValue = "") String query,
+                                                                              @RequestParam(defaultValue = "0") int page,
+                                                                              @RequestParam(defaultValue = "10") int size,
+                                                                              @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Experience> experiences = experienceService.filter(query, Experience.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Experiences retrieved successfully", experiences));
+    }
+
+
+
+
+
+
+
     /**
      * Fetches all experiences for the user.
      */

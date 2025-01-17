@@ -37,8 +37,7 @@ public class Skill  extends AbstractAuditableEntity{
     private JobSeeker jobseeker;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "skills", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    private Set<Cv> cvs = new LinkedHashSet<>();
+
 
 
     @ManyToOne(cascade = {CascadeType.ALL})
@@ -46,5 +45,10 @@ public class Skill  extends AbstractAuditableEntity{
 
     @Column(name = "is_acquired", nullable = false)
     private Boolean isAcquired = false;
+
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "cv_id", nullable = false)
+    private Cv cv;
 
 }

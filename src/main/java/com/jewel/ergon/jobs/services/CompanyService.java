@@ -3,7 +3,11 @@ package com.jewel.ergon.jobs.services;
 
 import com.jewel.ergon.jobs.model.Company;
 import com.jewel.ergon.jobs.repo.CompanyRepository;
+import com.jewel.ergon.jobs.services.eql.SpecificationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 
@@ -11,17 +15,10 @@ import org.springframework.stereotype.Service;
 public class CompanyService extends CrudServiceImpl<Company, Long> {
 
 
-
-    private final CompanyRepository companyRepository;
-
-    @Autowired
-    public CompanyService(CompanyRepository companyRepository) {
-        this.companyRepository = companyRepository;
+    public CompanyService(ApplicationContext applicationContext, SpecificationBuilder<Company> specificationBuilder, JpaRepository<Company, Long> jpaRepository, JpaSpecificationExecutor<Company> specificationRepository) {
+        super(applicationContext, specificationBuilder, jpaRepository, specificationRepository);
     }
 
-    @Override
-    protected CompanyRepository getRepository() {
-        return companyRepository; // Provide the specific repository for Company entity
-    }
+
 }
 

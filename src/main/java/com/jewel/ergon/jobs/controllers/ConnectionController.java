@@ -37,6 +37,35 @@ public class ConnectionController {
         this.connectionService = connectionService;
     }
 
+
+    //TODO add similar method to all controllers
+
+    /**
+     * Fetches  Connections using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all connections EQL", description = "Retrieve a list of all connections using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of connections",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Connection.class))})
+    })
+    @GetMapping("/getAllConnectionsByEql")
+    public ResponseEntity<StandardResponse<Page<Connection>>> getAllConnections(@RequestParam(defaultValue = "") String query,
+                                                                                @RequestParam(defaultValue = "0") int page,
+                                                                                @RequestParam(defaultValue = "10") int size,
+                                                                                @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Connection> connections = connectionService.filter(query, Connection.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Connections retrieved successfully", connections));
+    }
+
+
     /**
      * Fetches all connections for the user.
      */

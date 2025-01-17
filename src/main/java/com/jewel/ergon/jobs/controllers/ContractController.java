@@ -39,6 +39,34 @@ public class ContractController {
     }
 
     /**
+     * Fetches  Contracts using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all contracts EQL", description = "Retrieve a list of all contracts using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of contracts",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Contract.class))})
+    })
+    @GetMapping("/getAllContractsByEql")
+    public ResponseEntity<StandardResponse<Page<Contract>>> getAllContracts(@RequestParam(defaultValue = "") String query,
+                                                                            @RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size,
+                                                                            @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Contract> contracts = contractService.filter(query, Contract.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Contracts retrieved successfully", contracts));
+    }
+
+
+
+
+    /**
      * Fetches all contracts for the user.
      */
     @SneakyThrows

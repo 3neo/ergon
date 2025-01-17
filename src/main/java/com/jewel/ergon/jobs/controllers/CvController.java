@@ -1,6 +1,7 @@
 package com.jewel.ergon.jobs.controllers;
 
 import com.jewel.ergon.jobs.model.Cv;
+import com.jewel.ergon.jobs.model.JobSeeker;
 import com.jewel.ergon.jobs.services.CvService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +36,40 @@ import java.util.Optional;
 public class CvController {
 
     private final CvService cvService;
+    private static final Logger logger = LoggerFactory.getLogger(JobSeekerController.class);
+
 
     @Autowired
     public CvController(CvService cvService) {
         this.cvService = cvService;
     }
+
+
+    /**
+     * Fetches  Cvs using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all cvs using EQL", description = "Retrieve a list of desired cvs using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of cvs",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Cv.class))})
+    })
+    @GetMapping("/getAllCvsByEql")
+    public ResponseEntity<StandardResponse<Page<Cv>>> getAllCompanies(@RequestParam(defaultValue = "") String query,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size,
+                                                                      @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Cv> cvs = cvService.filter(query, Cv.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Cvs retrieved successfully", cvs));
+    }
+
 
     /**
      * Fetches all cvs for the user.
@@ -76,18 +110,27 @@ public class CvController {
     }
 
     /**
-     * Creates a new Cv.
+     * Creates a new CV.
      */
     @Operation(summary = "Create a new cv", description = "Add a new cv to the list.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Cv created",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Cv.class))}),
+            @ApiResponse(responseCode = "201", description = "cv created",
+                    content = {@Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE, schema = @Schema(implementation = Cv.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
-    @PostMapping("/createCv")
-    public ResponseEntity<StandardResponse<Cv>> createCv(@Valid @RequestBody Cv cvRequest) {
-        Cv createdCv = cvService.save(cvRequest);
-        return new ResponseEntity<>(new StandardResponse<>(HttpStatus.CREATED.value(), "Cv created successfully", createdCv), HttpStatus.CREATED);
+    @PostMapping(value = "/createCv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<StandardResponse<Cv>> createJobSeeker(@RequestPart("entity") Cv cv,
+                                                                @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+
+
+        if (file != null) {
+            logger.info("Received file: {}", file.getOriginalFilename());
+            logger.info("Received file size: {}", file.getSize());
+            logger.info("Received Content-Type: {}", file.getContentType());
+            cv.setFile(file.getBytes());
+        }
+        Cv createdCv = cvService.save(cv);
+        return new ResponseEntity<>(new StandardResponse<>(HttpStatus.CREATED.value(), "cv created successfully", createdCv), HttpStatus.CREATED);
     }
 
     /**

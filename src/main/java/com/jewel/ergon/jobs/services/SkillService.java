@@ -3,20 +3,17 @@ package com.jewel.ergon.jobs.services;
 
 import com.jewel.ergon.jobs.model.Skill;
 import com.jewel.ergon.jobs.repo.SkillRepository;
+import com.jewel.ergon.jobs.services.eql.SpecificationBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SkillService extends CrudServiceImpl<Skill, Long> {
 
 
-    private final SkillRepository skillRepository;
-
-    public SkillService(SkillRepository skillRepository) {
-        this.skillRepository = skillRepository;
-    }
-
-    @Override
-    protected SkillRepository getRepository() {
-        return this.skillRepository; // Provide the specific repository for Company entity
+    public SkillService(ApplicationContext applicationContext, SpecificationBuilder<Skill> specificationBuilder, JpaRepository<Skill, Long> jpaRepository, JpaSpecificationExecutor<Skill> specificationRepository) {
+        super(applicationContext, specificationBuilder, jpaRepository, specificationRepository);
     }
 }

@@ -4,27 +4,23 @@ import com.jewel.ergon.jobs.model.Company;
 import com.jewel.ergon.jobs.model.Connection;
 import com.jewel.ergon.jobs.repo.CompanyRepository;
 import com.jewel.ergon.jobs.repo.ConnectionRepository;
+import com.jewel.ergon.jobs.services.eql.SpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class ConnectionService extends CrudServiceImpl<Connection, Long> {
-    private final ConnectionRepository connectionRepository;
-    private final CompanyRepository companyRepository;
 
-    public ConnectionService(ConnectionRepository connectionRepository, CompanyRepository companyRepository) {
-        this.connectionRepository = connectionRepository;
-        this.companyRepository = companyRepository;
+
+    public ConnectionService(ApplicationContext applicationContext, SpecificationBuilder<Connection> specificationBuilder, JpaRepository<Connection, Long> jpaRepository, JpaSpecificationExecutor<Connection> specificationRepository) {
+        super(applicationContext, specificationBuilder, jpaRepository, specificationRepository);
     }
 
-
-    @Override
-    protected ConnectionRepository getRepository() {
-        return this.connectionRepository;
-    }
 
 //    /**
 //     * @param entity

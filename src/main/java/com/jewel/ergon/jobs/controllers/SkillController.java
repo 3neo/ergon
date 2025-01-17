@@ -37,6 +37,41 @@ public class SkillController {
         this.skillService = skillService;
     }
 
+
+    /**
+     * Fetches  Skills using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all skills using EQL", description = "Retrieve a list of all skills using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of skills",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Skill.class))})
+    })
+    @GetMapping("/getAllSkillsByEql")
+    public ResponseEntity<StandardResponse<Page<Skill>>> getAllCompanies(@RequestParam(defaultValue = "") String query,
+                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                         @RequestParam(defaultValue = "10") int size,
+                                                                         @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Skill> skills = skillService.filter(query, Skill.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Skills retrieved successfully", skills));
+    }
+
+
+
+
+
+
+
+
+
+
     /**
      * Fetches all skills for the user.
      */

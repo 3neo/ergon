@@ -53,8 +53,10 @@ public class Contract   extends AbstractAuditableEntity{
     @JoinColumn(nullable = false)
     private Experience experience;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+
+
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.ALL, optional = false)
     private Currency currency;
 
 }

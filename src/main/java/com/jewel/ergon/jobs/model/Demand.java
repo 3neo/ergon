@@ -35,7 +35,9 @@ public class Demand  extends AbstractAuditableEntity{
     @Column(nullable = false)
     private String role;
 
-    @Column(nullable = false)
+
+    //it's not mandatory because it can be in OFFER status
+    @Column()
     private LocalDate dateApplied;
 
 
@@ -44,21 +46,22 @@ public class Demand  extends AbstractAuditableEntity{
 
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, unique = true)
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "demand_type", nullable = false)
     private DemandType demandType;
 
-    @Column(name = "date_start", nullable = false)
+    @Column(name = "date_start", nullable = false )
     private LocalDate dateStart;
 
     @NotNull(message = "jobLink should not be null")
     @Column(name = "job_link", nullable = false)
     private URL jobLink;
 
-    @Column(name = "description", nullable = false)
+    @Lob
+    @Column(name = "description", nullable = false )
     private String description;
 
     @JsonIgnore

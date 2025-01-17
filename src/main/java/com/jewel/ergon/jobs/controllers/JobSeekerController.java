@@ -42,6 +42,33 @@ public class JobSeekerController {
         this.jobSeekerService = jobSeekerService;
     }
 
+
+    /**
+     * Fetches  JobSeekers using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all jobSeekers using EQL", description = "Retrieve a list of all jobSeekers using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of jobSeekers",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = JobSeeker.class))})
+    })
+    @GetMapping("/getAllJobSeekersByEql")
+    public ResponseEntity<StandardResponse<Page<JobSeeker>>> getAllCompanies(@RequestParam(defaultValue = "") String query,
+                                                                             @RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "10") int size,
+                                                                             @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<JobSeeker> jobSeekers = jobSeekerService.filter(query, JobSeeker.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "JobSeekers retrieved successfully", jobSeekers));
+    }
+
+
     /**
      * Fetches all jobSeekers for the user.
      */
@@ -80,21 +107,26 @@ public class JobSeekerController {
         return ResponseEntity.notFound().build();
     }
 
+
     /**
      * Creates a new JobSeeker.
      */
     @Operation(summary = "Create a new jobSeeker", description = "Add a new jobSeeker to the list.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "JobSeeker created",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = JobSeeker.class))}),
+                    content = {@Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE, schema = @Schema(implementation = JobSeeker.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
-    @PostMapping(value="/createJobSeeker")    //, consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    public ResponseEntity<StandardResponse<JobSeeker>> createJobSeeker(/*@RequestParam("file") MultipartFile file,*/ @Valid @RequestBody JobSeeker jobSeeker) throws IOException {
-        // Log incoming parts
-  //      logger.error("Received file: " + file.getOriginalFilename());
-        logger.error("Received jobSeeker: " + jobSeeker);
-  //      jobSeeker.setImage(file.getBytes());
+    @PostMapping(value = "/createJobSeeker", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<StandardResponse<JobSeeker>> createJobSeeker(@RequestPart("entity") JobSeeker jobSeeker,
+                                                                       @RequestPart(value = "file"  , required = false) MultipartFile file) throws IOException {
+
+        if (file != null){
+            logger.info("Received file: {}", file.getOriginalFilename());
+            logger.info("Received file size: {}", file.getSize());
+            logger.info("Received Content-Type: {}", file.getContentType());
+            jobSeeker.setImage(file.getBytes());
+        }
         JobSeeker createdJobSeeker = jobSeekerService.save(jobSeeker);
         return new ResponseEntity<>(new StandardResponse<>(HttpStatus.CREATED.value(), "JobSeeker created successfully", createdJobSeeker), HttpStatus.CREATED);
     }

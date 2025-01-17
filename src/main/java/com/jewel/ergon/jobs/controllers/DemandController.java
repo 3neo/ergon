@@ -37,6 +37,43 @@ public class DemandController {
         this.demandService = demandService;
     }
 
+
+
+    /**
+     * Fetches  Demands using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all demands using EQL", description = "Retrieve a list of all demands using eql")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of demands",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Demand.class))})
+    })
+    @GetMapping("/getAllDemandsByEql")
+    public ResponseEntity<StandardResponse<Page<Demand>>> getAllCompanies(@RequestParam(defaultValue = "") String query,
+                                                                          @RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "10") int size,
+                                                                          @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Demand> demands = demandService.filter(query, Demand.class, pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Demands retrieved successfully", demands));
+    }
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Fetches all demands for the user.
      */

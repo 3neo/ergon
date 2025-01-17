@@ -4,24 +4,17 @@ import com.jewel.ergon.jobs.model.Demand;
 import com.jewel.ergon.jobs.model.Education;
 import com.jewel.ergon.jobs.repo.DemandRepository;
 import com.jewel.ergon.jobs.repo.EducationRepository;
+import com.jewel.ergon.jobs.services.eql.SpecificationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EducationService extends CrudServiceImpl<Education, Long> {
 
-
-    private final EducationRepository educationRepository;
-
-
-
-
-    public EducationService(EducationRepository educationRepository) {
-        this.educationRepository = educationRepository;
-    }
-
-    @Override
-    protected EducationRepository getRepository() {
-        return this.educationRepository; // Provide the specific repository for Company entity
+    public EducationService(ApplicationContext applicationContext, SpecificationBuilder<Education> specificationBuilder, JpaRepository<Education, Long> jpaRepository, JpaSpecificationExecutor<Education> specificationRepository) {
+        super(applicationContext, specificationBuilder, jpaRepository, specificationRepository);
     }
 }

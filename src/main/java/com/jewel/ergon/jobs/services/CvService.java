@@ -2,26 +2,19 @@ package com.jewel.ergon.jobs.services;
 
 import com.jewel.ergon.jobs.model.Cv;
 import com.jewel.ergon.jobs.repo.CvRepository;
+import com.jewel.ergon.jobs.services.eql.SpecificationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CvService extends CrudServiceImpl<Cv, Long> {
 
 
-
-    private final CvRepository cvRepository;
-
-
-    @Autowired
-    public CvService(CvRepository cvRepository) {
-        this.cvRepository = cvRepository;
-    }
-
-    @Override
-    protected JpaRepository<Cv, Long> getRepository() {
-        return this.cvRepository; // Provide the specific repository for Company entity
+    public CvService(ApplicationContext applicationContext, SpecificationBuilder<Cv> specificationBuilder, JpaRepository<Cv, Long> jpaRepository, JpaSpecificationExecutor<Cv> specificationRepository) {
+        super(applicationContext, specificationBuilder, jpaRepository, specificationRepository);
     }
 }
 

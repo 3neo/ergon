@@ -38,13 +38,40 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
+
+    /**
+     * Fetches  companies using eql .
+     */
+    @SneakyThrows
+    @Operation(summary = "Get all companies", description = "Retrieve a list of all companies for the user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of companies",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))})
+    })
+    @GetMapping("/getAllCompaniesByEql")
+    public ResponseEntity<StandardResponse<Page<Company>>> getAllCompanies(@RequestParam(defaultValue = "") String query,
+                                                                           @RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+
+        // Parsing sort parameter
+        Sort.Direction direction = Sort.Direction.fromString(sort[1]);
+        Sort sortOrder = Sort.by(direction, sort[0]);
+        // Creating pageable instance
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        Page<Company> companies = companyService.filter(query,Company.class , pageable);
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Companies retrieved successfully", companies));
+    }
+
+
     /**
      * Fetches all companys for the user.
      */
     @SneakyThrows
-    @Operation(summary = "Get all companys", description = "Retrieve a list of all companys for the user.")
+    @Operation(summary = "Get all companies", description = "Retrieve a list of all companies for the user.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of companys",
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of companies",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Company.class))})
     })
     @GetMapping("/getAllCompanies")
@@ -59,7 +86,7 @@ public class CompanyController {
         // Creating pageable instance
         Pageable pageable = PageRequest.of(page, size, sortOrder);
         Page<Company> companies = companyService.findAll(pageable);
-        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Companys retrieved successfully", companies));
+        return ResponseEntity.ok(new StandardResponse<>(HttpStatus.OK.value(), "Companies retrieved successfully", companies));
     }
 
     /**

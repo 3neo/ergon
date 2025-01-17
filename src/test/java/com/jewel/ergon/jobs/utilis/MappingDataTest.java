@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+// test class for MappingData
 class MappingDataTest {
 
     @Test

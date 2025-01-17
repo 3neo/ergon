@@ -50,11 +50,15 @@ public class Experience  extends AbstractAuditableEntity{
 
 
     //TODO use set ?
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "experiences", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    private List<Cv> cvs ;
+
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "experience", cascade = CascadeType.ALL)
     private List<Contract> contracts = new ArrayList<>();
+
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cv_id")
+    private Cv cv;
 
 }
