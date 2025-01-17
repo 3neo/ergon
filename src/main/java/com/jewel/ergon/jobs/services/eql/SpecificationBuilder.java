@@ -35,21 +35,29 @@ public class SpecificationBuilder<T> {
     }
 
     private Predicate buildCondition(FilterCriteria filter, CriteriaBuilder cb, Root<T> root) {
+        Path<?> path = root.get(filter.getKey());
+        Class<?> fieldType = path.getJavaType();
+
+        Object value = filter.getValue();
+        if (fieldType == Boolean.class && value instanceof String) {
+            value = Boolean.parseBoolean((String) value);
+        }
+
         switch (filter.getOperator()) {
             case "=":
-                return cb.equal(root.get(filter.getKey()), filter.getValue());
+                return cb.equal(path, value);
             case "!=":
-                return cb.notEqual(root.get(filter.getKey()), filter.getValue());
-            case ">":
-                return cb.greaterThan(root.get(filter.getKey()), (Comparable) filter.getValue());
+                return cb.notEqual(path, value);
             case "<":
-                return cb.lessThan(root.get(filter.getKey()), (Comparable) filter.getValue());
-            case ">=":
-                return cb.greaterThanOrEqualTo(root.get(filter.getKey()), (Comparable) filter.getValue());
+                return cb.lessThan(path.as(Comparable.class), (Comparable) value);
+            case ">":
+                return cb.greaterThan(path.as(Comparable.class), (Comparable) value);
             case "<=":
-                return cb.lessThanOrEqualTo(root.get(filter.getKey()), (Comparable) filter.getValue());
+                return cb.lessThanOrEqualTo(path.as(Comparable.class), (Comparable) value);
+            case ">=":
+                return cb.greaterThanOrEqualTo(path.as(Comparable.class), (Comparable) value);
             case "LIKE":
-                return cb.like(root.get(filter.getKey()), "%" + filter.getValue() + "%");
+                return cb.like(path.as(String.class), "%" + value + "%");
             default:
                 throw new UnsupportedOperationException("Operator not supported: " + filter.getOperator());
         }
