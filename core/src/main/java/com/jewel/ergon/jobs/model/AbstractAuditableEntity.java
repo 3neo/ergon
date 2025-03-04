@@ -1,0 +1,142 @@
+package com.jewel.ergon.jobs.model;
+
+
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
+
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.UUID;
+
+
+@MappedSuperclass
+//@EntityListeners(AuditingEntityListener.class) // Enables JPA auditing
+@Getter
+@Setter
+@ToString
+@Where(clause = "deleted = false") // Automatically excludes soft-deleted records
+public abstract class AbstractAuditableEntity implements Serializable {
+
+//TODO fix this double id issue
+
+    //  @Type(value = ) // Use BINARY(16) in production databases for efficiency
+    @Column(name = "uuid", updatable = false, nullable = false, unique = true)
+    private String uuid;
+
+ //   @CreatedDate
+ //   @NotNull
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private ZonedDateTime createdAt;
+
+ //   @LastModifiedDate
+ //   @NotNull
+    @Column(name = "updated_at" )     //, nullable = false)
+    private ZonedDateTime updatedAt;
+
+ //   @CreatedBy
+ //   @NotNull
+    @Column(name = "created_by", nullable = false, updatable = false, length = 100)
+    private String createdBy;
+
+ //   @LastModifiedBy
+    @Column(name = "modified_by", length = 100)
+    private String modifiedBy;
+
+ //   @NotNull
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private long version; // Changed to long for high-concurrency systems
+
+    //  @JsonIgnore // Exclude from serialization to ensure tenant security
+ //   @NotNull
+    @Column(name = "tenant_id", length = 50)   //, nullable = false
+    private String tenantId; // For multi-tenancy
+
+
+    //TODO ?
+    @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "jsonb") // Specifies that this column is of type jsonb in the database
+    @Type(JsonType.class)
+    @ToString.Exclude              // Hibernate-specific annotation to handle jsonb types
+    private Map<String, Object> attr;
+
+    /**
+     * Soft delete the entity.
+     */
+    public void softDelete() {
+        this.deleted = true;
+    }
+
+    /**
+     * Hook for additional initialization logic after loading.
+     */
+    @PostLoad
+    protected void onLoad() {
+        // Custom initialization logic
+    }
+
+    /**
+     * Hook for pre-persistence logic.
+     */
+    @PrePersist
+    protected void beforePersist() {
+        // Custom pre-persist actions
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID().toString();
+        }
+        if (this.createdAt == null) {
+            this.createdAt = ZonedDateTime.now();
+        }
+
+        if (this.getCreatedBy() == null) {
+            this.createdBy = getCurrentUsername();
+        }
+
+    }
+
+    /**
+     * Hook for pre-update logic.
+     */
+    @PreUpdate
+    protected void beforeUpdate() {
+        // Custom pre-update actions
+        this.updatedAt = ZonedDateTime.now();
+        this.modifiedBy = getCurrentUsername();
+
+    }
+
+    /**
+     * Enforces immutability of createdAt field.
+     *
+     * @param createdAt Cannot modify after set.
+     */
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        if (this.createdAt == null) {
+            this.createdAt = createdAt;
+        }
+    }
+
+
+    private String getCurrentUsername() {
+
+        //TODO should be implemented after adding spring Security
+
+        // Get the currently authenticated user from Spring Security context
+//    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    if (principal instanceof User) {
+//      return ((User) principal).getUsername(); // Extract the username from SecurityContext
+//    }
+        return "unknown"; // Default if no authenticated user found
+    }
+
+
+}

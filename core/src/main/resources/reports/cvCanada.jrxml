@@ -1,0 +1,169 @@
+<!-- Created with Jaspersoft Studio version 7.0.1.final using JasperReports Library version 7.0.1-573496633c2b4074e32f433154b543003f7d2498  -->
+<jasperReport name="cvcanada" language="java" pageWidth="555" pageHeight="802" whenNoDataType="NoDataSection"
+              columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0"
+              whenResourceMissingType="Empty" uuid="e1e28dc2-9cba-42ec-a596-f6499527b832" summaryNewPage="true">
+    <property name="com.jaspersoft.studio.data.sql.tables"
+              value="c2tpbGwgLDM1MiwxNSw0ZTFkYzMyYS03YTZkLTRkYTgtYjYyNi0xNDFkYTUyNGQwYzU7am9iX3Nl&#xa;ZWtlciAsNTI2LDY0Miw3ZTk0NmIyMi1iZmU1LTQyYjctODBjMi1lZmQ1NDgxYzg1ZGI7ZWR1Y2F0&#xa;aW9uICwxNSw5MTgsNjM5YzMyZTEtNGUwMC00MWVkLWFlZTEtMWIxZTZmMzYwYTNlO2V4cGVyaWVu&#xa;Y2UgLDM1Miw2NDEsZmY3N2MxNDAtYjQzNi00NjgxLWFiMmItMGY1NjczZDNiMTI5O2NvbXBhbnkg&#xa;LDE5MCw0ODYsMGQ5ZjI4MjEtMDBkOS00NTI0LTg3MDMtZTZiNmZlZGMwYjQwOw=="/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter (2)"/>
+    <property name="net.sf.jasperreports.print.keep.full.text" value="false"/>
+    <parameter name="id" class="java.lang.Integer"/>
+    <query language="SQL"><![CDATA[SELECT
+    js.first_name AS jobSeekerFirstName,
+    js.last_name AS jobSeekerLastName,
+    js.address AS jobSeekerAddress,
+    js.email AS jobSeekerEmail,
+    s.name AS competenceName,
+    s.description AS competenceDescription,
+    TO_CHAR(ex.start_date, 'YYYY') AS experienceAnneDebut,
+    TO_CHAR(ex.end_date, 'YYYY') AS experienceAnneFin,
+    ex.job_title AS experienceTitre,
+    c.name AS entrepriseNom,
+    c.address AS entrepriseAddress,
+    TO_CHAR(edu.start_date, 'YYYY') AS educationAnneDebut,
+    TO_CHAR(edu.end_date, 'YYYY') AS educationAnneFin,
+    edu.degree AS educationNiveau,
+    edu.institution AS educationUniversite,
+    edu.field_of_study AS educationDiplome
+FROM job_seeker js
+inner join cv c2 on c2.jobseeker_id = js.id
+INNER JOIN skill s ON s.jobseeker_id = js.id
+INNER JOIN experience ex ON ex.job_seeker_id = js.id
+INNER JOIN education edu ON edu.jobseeker_id = js.id
+INNER JOIN company c ON c.id = ex.company_id
+WHERE c2.id = $P{id}
+]]></query>
+    <field name="jobseekerfirstname" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="jobseekerfirstname"/>
+        <property name="com.jaspersoft.studio.field.label" value="jobseekerfirstname"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="job_seeker"/>
+    </field>
+    <field name="jobseekerlastname" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="jobseekerlastname"/>
+        <property name="com.jaspersoft.studio.field.label" value="jobseekerlastname"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="job_seeker"/>
+    </field>
+    <field name="jobseekeraddress" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="jobseekeraddress"/>
+        <property name="com.jaspersoft.studio.field.label" value="jobseekeraddress"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="job_seeker"/>
+    </field>
+    <field name="jobseekeremail" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="jobseekeremail"/>
+        <property name="com.jaspersoft.studio.field.label" value="jobseekeremail"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="job_seeker"/>
+    </field>
+    <field name="competencename" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="competencename"/>
+        <property name="com.jaspersoft.studio.field.label" value="competencename"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="skill"/>
+    </field>
+    <field name="competencedescription" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="competencedescription"/>
+        <property name="com.jaspersoft.studio.field.label" value="competencedescription"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="skill"/>
+    </field>
+    <field name="experienceannedebut" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="experienceannedebut"/>
+        <property name="com.jaspersoft.studio.field.label" value="experienceannedebut"/>
+    </field>
+    <field name="experienceannefin" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="experienceannefin"/>
+        <property name="com.jaspersoft.studio.field.label" value="experienceannefin"/>
+    </field>
+    <field name="experiencetitre" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="experiencetitre"/>
+        <property name="com.jaspersoft.studio.field.label" value="experiencetitre"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="experience"/>
+    </field>
+    <field name="entreprisenom" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="entreprisenom"/>
+        <property name="com.jaspersoft.studio.field.label" value="entreprisenom"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="company"/>
+    </field>
+    <field name="entrepriseaddress" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="entrepriseaddress"/>
+        <property name="com.jaspersoft.studio.field.label" value="entrepriseaddress"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="company"/>
+    </field>
+    <field name="educationannedebut" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="educationannedebut"/>
+        <property name="com.jaspersoft.studio.field.label" value="educationannedebut"/>
+    </field>
+    <field name="educationannefin" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="educationannefin"/>
+        <property name="com.jaspersoft.studio.field.label" value="educationannefin"/>
+    </field>
+    <field name="educationniveau" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="educationniveau"/>
+        <property name="com.jaspersoft.studio.field.label" value="educationniveau"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="education"/>
+    </field>
+    <field name="educationuniversite" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="educationuniversite"/>
+        <property name="com.jaspersoft.studio.field.label" value="educationuniversite"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="education"/>
+    </field>
+    <field name="educationdiplome" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="educationdiplome"/>
+        <property name="com.jaspersoft.studio.field.label" value="educationdiplome"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="education"/>
+    </field>
+    <background splitType="Stretch"/>
+    <title height="110" splitType="Stretch">
+        <element kind="textField" uuid="709e916d-0fdb-43d8-b950-2510d8f4c2c6" x="230" y="20" width="100" height="20"
+                 textAdjust="StretchHeight">
+            <paragraph lineSpacingSize="0.0"/>
+            <expression><![CDATA[$F{jobseekerfirstname}+" "+$F{jobseekerlastname}]]></expression>
+        </element>
+        <element kind="textField" uuid="e667d06b-bdfa-4f8a-a784-f0511dcb8dc3" x="230" y="60" width="100" height="20"
+                 textAdjust="StretchHeight">
+            <expression><![CDATA[$F{jobseekeraddress}]]></expression>
+        </element>
+        <element kind="textField" uuid="15b41959-a3e6-4636-a5b6-6423c3cfeff8" x="130" y="40" width="100" height="20"
+                 textAdjust="StretchHeight">
+            <expression><![CDATA["Courriel : "+$F{jobseekeremail}]]></expression>
+        </element>
+    </title>
+    <pageHeader splitType="Stretch"/>
+    <columnHeader splitType="Stretch"/>
+    <detail>
+        <band height="200" splitType="Stretch">
+            <element kind="staticText" uuid="e271b5e3-ae84-4520-8ef3-ed632b6170d7" x="30" y="0" width="100" height="30">
+                <text><![CDATA[COMPÉTENCES]]></text>
+            </element>
+            <element kind="textField" uuid="27c44e8a-66a3-43e1-a861-ae229585c693" x="30" y="30" width="514" height="30"
+                     textAdjust="StretchHeight">
+                <expression><![CDATA[$F{competencename}.concat( " :   " )+$F{competencedescription}]]></expression>
+            </element>
+            <element kind="staticText" uuid="993a6967-6434-48c7-9acd-ee43c96b2741" x="30" y="60" width="180"
+                     height="30">
+                <text><![CDATA[EXPÉRIENCES DE TRAVAIL ]]></text>
+            </element>
+            <element kind="textField" uuid="0a3f1dbe-801f-4d60-a178-c070884151db" mode="Transparent" x="30" y="90"
+                     width="515" height="40" fontSize="9.0" textAdjust="StretchHeight">
+                <expression>
+                    <![CDATA[$F{experienceannedebut}.concat("-")+$F{experienceannefin}+"   "+$F{experiencetitre}+" à "+$F{entreprisenom}+" ( " + $F{jobseekeraddress}+" )"]]></expression>
+            </element>
+            <element kind="staticText" uuid="fbe56549-4989-446b-b522-a5c275c5d0dc" x="30" y="130" width="180"
+                     height="30">
+                <text><![CDATA[FORMATION]]></text>
+            </element>
+            <element kind="textField" uuid="ae239c23-125b-4506-ada8-ddee7b09136d" x="30" y="160" width="514" height="20"
+                     textAdjust="StretchHeight">
+                <expression>
+                    <![CDATA[$F{educationannedebut}.concat("-").concat($F{educationannefin})+"   "+$F{educationdiplome}]]></expression>
+            </element>
+            <element kind="textField" uuid="91040134-3eed-43ed-92a9-8867c70c2ec2" x="30" y="180" width="150"
+                     height="20">
+                <expression><![CDATA[$F{educationuniversite}]]></expression>
+            </element>
+        </band>
+    </detail>
+    <columnFooter height="31" splitType="Stretch"/>
+    <pageFooter height="30" splitType="Stretch">
+        <element kind="textField" uuid="ab3135a6-cd8a-4c95-813f-f493db0c8937" x="227" y="0" width="100" height="30">
+            <expression><![CDATA[$V{PAGE_NUMBER}]]></expression>
+        </element>
+    </pageFooter>
+    <summary height="49" splitType="Stretch"/>
+</jasperReport>
