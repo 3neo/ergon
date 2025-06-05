@@ -1,32 +1,37 @@
 package com.jewel.services;
 
 
-import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.ollama.api.OllamaModel;
+import org.springframework.ai.ollama.api.OllamaOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-
-import java.util.Map;
 
 @Service
 public class LlmService {
 
-    private final ChatClient chatClient;
+    private final ChatModel chatModel;
+    //logger
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LlmService.class);
 
     @Autowired
-    public LlmService(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
+    public LlmService(ChatModel chatModel) {
+        this.chatModel = chatModel;
     }
 
     public String ask(String message) {
-        String response = chatClient.prompt().user(message).call().content();
-     //   return Map.of("generation", response);
-        return response;
+        org.springframework.ai.chat.model.ChatResponse response = chatModel.call(
+                new Prompt(
+                        message
+                ));
+        logger.info("Received response: {}", response.getResult().getOutput().getText());
+        return response.getResult().getOutput().getText(); // Assuming ChatResponse has a getContent() method to retrieve the response as a String
     }
 
-    public Flux<String> askAndGetStream(String message) {
-        return chatClient.prompt().user(message).stream().content();
-    }
+//  //  public Flux<String> askAndGetStream(String message) {
+//        return chatModel.prompt().user(message).stream().content();
+//    }
 
 
 }

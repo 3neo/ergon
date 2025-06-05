@@ -26,6 +26,8 @@ public class ErgonApplication {
 
     public static void main(String[] args) {
         logger.info("before setting time zone is: " + TimeZone.getDefault().getID());
+        System.out.println("BOOTSTRAP SERVERS = " + System.getProperty("spring.kafka.bootstrap-servers"));
+
         ApplicationContext applicationContext = SpringApplication.run(ErgonApplication.class, args);
         // Initialize ApplicationModules to check module boundaries (optional)
         ApplicationModules modules = ApplicationModules.of(ErgonApplication.class, JavaClass.Predicates.resideInAPackage("com.jewel.ergon.domain"));
@@ -33,6 +35,8 @@ public class ErgonApplication {
         modules.forEach(System.out::println);
         // Verify module dependencies
         modules.verify();
+        System.out.println("BOOTSTRAP SERVERS = " + System.getProperty("spring.kafka.bootstrap-servers"));
+
 
     }
     @PostConstruct

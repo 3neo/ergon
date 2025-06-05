@@ -2,8 +2,6 @@ package com.jewel.controllers;
 
 import com.jewel.services.LlmService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +29,11 @@ public class ChatController {
         return Map.of("generation", response);
     }
 
-    @GetMapping("/generateStream")
-    public Flux<String> generateStream(@RequestParam(value = "message",
-            defaultValue = "Tell me a joke") String message) {
-        return llmService.askAndGetStream(message)
-                .map(generation -> generation.replace("\n", " ").replace("\r", " "))
-                .map(generation -> generation.replaceAll("\\s+", " "));
-    }
+//    @GetMapping("/generateStream")
+//    public Flux<String> generateStream(@RequestParam(value = "message",
+//            defaultValue = "Tell me a joke") String message) {
+//        return llmService.askAndGetStream(message)
+//                .map(generation -> generation.replace("\n", " ").replace("\r", " "))
+//                .map(generation -> generation.replaceAll("\\s+", " "));
+//    }
 }

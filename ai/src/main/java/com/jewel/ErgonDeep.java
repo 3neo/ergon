@@ -18,8 +18,10 @@ public class ErgonDeep {
 
     public static void main(String[] args) {
         logger.info("before setting time zone is: " + TimeZone.getDefault().getID());
+        System.out.println("BOOTSTRAP SERVERS = " + System.getProperty("spring.kafka.bootstrap-servers"));
         ApplicationContext applicationContext = SpringApplication.run(ErgonDeep.class, args);
 
+        System.out.println("BOOTSTRAP SERVERS = " + System.getProperty("spring.kafka.bootstrap-servers"));
 
     }
 
