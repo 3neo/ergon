@@ -1,1 +1,59 @@
-Job seeking management application
+Ergon Job seeking management application : 
+
+This application helps users manage their job search process by allowing them to track job applications, interviews, and follow-ups. It provides a user-friendly interface to organize and monitor the status of each job application.
+
+Ergon require pgvector , kafka and keycloak
+
+kafka :
+docker run -d --name kafka13 -p 9092:9092 -e KAFKA_CFG_NODE_ID=0 -e KAFKA_CFG_PROCESS_ROLES=broker,controller -e KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@localhost:9093 -e KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT -e KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER -e KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1 -e KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -e KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1 bitnami/kafka:latest
+
+
+to run kafka on windows :
+docker run -d --name kafka11 -p 9092:9092 ` -e KAFKA_CFG_NODE_ID=0 ` -e KAFKA_CFG_PROCESS_ROLES=broker,controller ` -e KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@localhost:9093 ` -e KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 ` -e KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 ` -e KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT ` -e KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER ` -e KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR=1 ` -e KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 ` -e KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR=1 ` bitnami/kafka:latest
+
+
+
+to run pgvector  :
+ linux :
+# Lance un conteneur PostgreSQL avec l'extension pgvector
+docker run -d --name ergon-pgvector -p 5432:5432 \
+  -e POSTGRES_USER=ergon \
+  -e POSTGRES_PASSWORD=Ergon13 \
+  -e POSTGRES_DB=postgres \
+  pgvector/pgvector:0.8.0-pg17
+
+
+   windows :
+  docker run -d --name ergon-pgvector -p 5432:5432 -e POSTGRES_USER=ergon -e POSTGRES_PASSWORD=Ergon13 -e POSTGRES_DB=postgres pgvector/pgvector:0.8.0-pg17
+
+
+to run keycloak ( dev mode ) :
+# Admin username
+export KEYCLOAK_ADMIN=admin
+
+# Admin password (can be static or randomly generated)
+export KEYCLOAK_ADMIN_PASSWORD=Ergon13
+
+# PostgreSQL connection
+export KC_DB=postgres
+export KC_DB_URL_HOST=ergon-pgvector   # name of your Postgres container
+export KC_DB_URL_DATABASE=postgres
+export KC_DB_USERNAME=ergon
+export KC_DB_PASSWORD=Ergon13
+
+
+
+docker run -d --name keycloak -p 8080:8080 \
+  -e KEYCLOAK_ADMIN=$KEYCLOAK_ADMIN \
+  -e KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_ADMIN_PASSWORD \
+  -e KC_DB=$KC_DB \
+  -e KC_DB_URL_HOST=$KC_DB_URL_HOST \
+  -e KC_DB_URL_DATABASE=$KC_DB_URL_DATABASE \
+  -e KC_DB_USERNAME=$KC_DB_USERNAME \
+  -e KC_DB_PASSWORD=$KC_DB_PASSWORD \
+  -v keycloak_data:/opt/keycloak/data \
+  quay.io/keycloak/keycloak:21.1.1 start-dev
+
+
+Developer Guide :
+Native queries do not support Hibernate filters. Therefore, to make tenantFilter work, you must use JPQL or the Criteria API ;) .
